@@ -941,7 +941,7 @@ class m_dom {
    */
   function edit_domain($dom,$dns,$gesmx,$force=0) {
     global $db,$err,$L_MX,$classes,$cuid;
-    $err->log("dom","edit_domain",$dom);
+    $err->log("dom","edit_domain",$dom."/".$dns."/".$gesmx);
     // Locked ?
     if (!$this->islocked && !$force) {
       $err->raise("dom",3);
@@ -1016,8 +1016,13 @@ class m_dom {
       }
     }
     
-    $db->query("UPDATE domaines SET gesdns='$dns', mx='$mx', gesmx='$gesmx' WHERE domaine='$dom'");
-    $db->query("UPDATE domaines set dns_action='UPDATE' where domaine='$dom';");
+    $db->query("UPDATE domaines SET gesdns='$dns', gesmx='$gesmx' WHERE domaine='$dom'");
+    if ($dns=="0" && $r["dns"]=="1") {
+      $db->query("UPDATE domaines set dns_action='DELETE' where domaine='$dom';");
+    }
+    if ($dns=="1" && $r["dns"]=="0") {
+      $db->query("UPDATE domaines set dns_action='UPDATE' where domaine='$dom';");
+    }
     
     return true;
   } // edit_domain
