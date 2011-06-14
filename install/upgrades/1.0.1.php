@@ -16,7 +16,7 @@ require("/var/alternc/bureau/class/config_nochk.php");
 $admin->enabled=1;
 
 // And we process the database changes : 
-$db->query("SELECT * FROM domaines WHERE gesmx=1;");
+$db->query("SELECT * FROM domaines;");
 $domains=array();
 while ($db->next_record()) {
   $domains[]=array("dom"=>$db->Record["domaine"],"gesmx"=>$db->Record["gesmx"],"mx"=>$db->Record["mx"]);
