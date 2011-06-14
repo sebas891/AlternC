@@ -107,5 +107,6 @@ UPDATE sub_domaines SET type='TXT' WHERE type='6';
 UPDATE sub_domaines SET web_action='UPDATE';
 
 -- not needed : it's now a subdomain with defmx and/or defmx2 type (this type is admin-only) :
-ALTER TABLE `domaines` DROP `mx` ;
+-- ALTER TABLE `domaines` DROP `mx` ;
+-- BUT we will remove it in a distant future version : we need it for the migration to take place fluently ...
 
