@@ -14,6 +14,7 @@ require("/var/alternc/bureau/class/config_nochk.php");
 
 // we go super-admin
 $admin->enabled=1;
+$dom->lock();
 
 // And we process the database changes : 
 $db->query("SELECT * FROM domaines;");
@@ -28,5 +29,8 @@ foreach($domains as $v) {
     $dom->set_sub_domain($v["dom"],"","mx",$v["mx"]);
   }
 }
+
+$dom->unlock();
+
 
 ?>
