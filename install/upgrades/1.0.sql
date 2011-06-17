@@ -1,4 +1,4 @@
--- ------------------------------------------------------------
+-- 
 -- Because of problems with people using AlternC pre1 , 
 -- we include 0.9.10.sql in this file
 
@@ -20,7 +20,7 @@ VALUES (
 'This variable set the way the account list works for accounts other than "admin" (2000). 0 (default) = admin other than admin/2000 can see their own account, but not the other one 1 = admin other than admin/2000 can see any account by clicking the ''show all accounts'' link. '
 );
 
--- --------------------------------------------------------
+-- 
 -- TABLES de mémorisation de la taille des dossiers db/listes
 
 CREATE TABLE IF NOT EXISTS `size_db` (
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `size_mailman` (
 ALTER TABLE `slaveip` CHANGE `ip` `ip` VARCHAR(40);
 ALTER TABLE `sessions` CHANGE `ip` `ip` VARCHAR( 40 ) NULL;
 
---- type subdomain evolution
+-- type subdomain evolution
 ALTER TABLE `sub_domaines` CHANGE `type` `type` VARCHAR(30);
 ALTER TABLE `sub_domaines_standby` CHANGE `type` `type` VARCHAR(30);
 
