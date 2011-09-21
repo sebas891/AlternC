@@ -58,6 +58,7 @@ host_create() {
     local USER=$(get_account_by_domain $FQDN)
     local user_letter=`print_user_letter "$USER"`
     local DOCUMENT_ROOT="${HTML_HOME}/${user_letter}/${USER}/$TARGET_DIR"
+    local ACCOUNT_ROOT="${HTML_HOME}/${user_letter}/${USER}/"
     local FILE_TARGET="$VHOST_DIR/${user_letter}/$USER/$FQDN.conf"
 
     # In case VTYPE don't have the same name as the template file, 
@@ -86,6 +87,7 @@ host_create() {
         sed -i \
         -e "s#%%fqdn%%#$FQDN#g" \
         -e "s#%%document_root%%#$DOCUMENT_ROOT#g" \
+        -e "s#%%account_root%%#$ACCOUNT_ROOT#g" \
         -e "s#%%redirect%%#$REDIRECT#g" \
         $TMP_FILE
 
