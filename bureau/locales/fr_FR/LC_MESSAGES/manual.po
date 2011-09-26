@@ -195,6 +195,18 @@ msgstr ""
 "Il n'y a pas de MX pointant vers ce serveur, alors que vous nous demandez "
 "d'héberger le mail ici."
 
+#. The name of the domain type MUST contain only digits and letters
+msgid "err_dom_26"
+msgstr "Le nom des types de domaines ne doit être composé que de chiffres ou de lettres."
+
+#. Invalid domain type selected, please check.
+msgid "err_dom_27"
+msgstr "Un type de domaine invalide a été sélectionné, merci de vérifier."
+
+#. The parameters for this subdomain and domain type are invalid. Please check for subdomain entries incompatibility
+msgid "err_dom_28"
+msgstr "Les paramètres pour ce sous-domaine et ce type de domaine sont invalide. Vérifiez qu'aucune incompatibilité n'existe sur ce sous-domaine."
+
 #. - Entrez le nom du domaine que vous souhaitez héberger. Le nom de domaine 
 #. doit être complet, mais <b>sans le www.</b><br /> IMPORTANT : Si vous voulez 
 #. un hébergement réel de domaine, il faut que les DNS de votre domaine 
