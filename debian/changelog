@@ -1,6 +1,5 @@
-alternc (1.0.2) stable; urgency=high
-  * Bugfix : dependency on gamin OR fam : gamin is better for courier-imap
-	and fam makes sasl imap auth fail
+alternc (1.0.2-2) stable; urgency=high
+  * Bugfix : dependency on gamin OR fam : gamin is better for courier-imap and fam makes sasl imap auth fail
   * Bugfix : adding french messages for domain new error messages
   * Bugfix : Fixing domaines types templates issues (incompatibility with pre 1.0 alternc)
 
