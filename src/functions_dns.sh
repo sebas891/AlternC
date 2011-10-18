@@ -49,13 +49,17 @@ dns_named_conf() {
     return 1
   fi
 
-  grep -q "$domain" "$NAMED_CONF"
+  # Add the entry
+  grep -q "\"$domain\"" "$NAMED_CONF"
   if [ $? -ne 0 ] ; then
     local tempo=$(cat "$NAMED_TEMPLATE")
     tempo=${tempo/@@DOMAINE@@/$domain}
     tempo=${tempo/@@ZONE_FILE@@/$(dns_zone_file $domain)}
     echo $tempo >> "$NAMED_CONF"
   fi
+
+  # Ask for restart of dns server
+  touch "$DNS_DO_RESTART"
 }
 
 dns_delete() {
@@ -69,6 +73,9 @@ dns_delete() {
   # Remove from the named conf
   local file=$(cat "$NAMED_CONF")
   echo -e "$file" |grep -v "\"$domain\"" > "$NAMED_CONF"
+
+  # Ask for restart of dns server
+  touch "$DNS_DO_RESTART"
 }
 
 # DNS regenerate
