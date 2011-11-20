@@ -3,6 +3,21 @@
 
 // TODO : we should accept a "-n" option that will mean : "don't do any action, but tell us" :) 
 
+$DONTDO=false;
+if ($argv[1]=="-n") {
+  array_shift($argv);
+  $DONTDO=true;
+  echo "'DONT DO' mode enabled, will NOT do anything for real\n";
+  function doexec($str) {
+    echo "EXECUTING $str\n";
+    return true;
+  }
+} else {
+  function doexec($str) {
+    return exec($str);
+  }
+}
+
 echo "Connecting to AlternC MySQL database... "; flush();
 
 define('NOCHECK', 1);
@@ -70,7 +85,7 @@ if ($r=="1" || $r=="a") {
     echo $c["path"]." ".$c["uid"]."\n";
     if (substr($c["path"],0,17)=="/var/alternc/mail") {
       if (is_dir($c["path"])) {
-	exec("chown -R 33.".$c["uid"]." ".escapeshellarg($c["path"]));
+	doexec("chown -R 33.".$c["uid"]." ".escapeshellarg($c["path"]));
       } else {
 	echo "WARNING: Folder ".$c["path"]." does not exist. Please do relevant check to delete associated pop account\n";
       }
@@ -89,7 +104,7 @@ if ($r=="2" || $r=="a") {
   while ($c=mysql_fetch_array($r)) {
     echo $c["login"]." ".$c["uid"]."\n";
     if (is_dir("/var/alternc/html/".substr($c["login"],0,1)."/".$c["login"])) { 
-      exec("chown -R 33.".$c["uid"]." ".escapeshellarg("/var/alternc/html/".substr($c["login"],0,1)."/".$c["login"]));
+      doexec("chown -R 33.".$c["uid"]." ".escapeshellarg("/var/alternc/html/".substr($c["login"],0,1)."/".$c["login"]));
     } else {
       echo "WARNING: Folder "."/var/alternc/html/".substr($c["login"],0,1)."/".$c["login"]." does not exist. Please do relevant check to delete associated alternc account, or recreate the folder\n";
     }
@@ -111,8 +126,8 @@ if ($r=="3" || $r=="a") {
 	  // Ok, we have a mail folder in /var/alternc/mail/p/popaccount_domain.tld/ Let's check it in the db : 
 	  list($alias)=@mysql_fetch_array(mysql_query("SELECT alias FROM mail_users WHERE path='".addslashes($mail."/".$c1."/".$c2)."';"));
 	  if (!$alias) {
-	    echo "WARNING: NOT FOUND: ".$mail."/".$c1."/".$c2.", deleting old pop folder.\n";
-	    exec("rm -rf ".escapeshellarg($mail."/".$c1."/".$c2));
+	    echo "WARNING: NOT FOUND: ".$mail."/".$c1."/".$c2." deleting old pop folder.\n";
+	    doexec("rm -rf ".escapeshellarg($mail."/".$c1."/".$c2));
 	  } else {
 	    echo $alias." OK\n";
 	  }
@@ -148,7 +163,7 @@ if ($r=="4" || $r=="a") {
 	    list($uid)=@mysql_fetch_array(mysql_query("SELECT uid FROM membres WHERE login='".addslashes($c2)."';"));
 	    if (!$uid) {
 	      echo "WARNING: NOT FOUND: ".$html."/".$c1."/".$c2.", deleting old alternc account.\n";
-	      exec("rm -rf ".escapeshellarg($html."/".$c1."/".$c2));
+	      doexec("rm -rf ".escapeshellarg($html."/".$c1."/".$c2));
 	    } else {
 	      echo $c2." (".$uid.") OK\n";
 	    }
@@ -168,8 +183,31 @@ if ($r=="4" || $r=="a") {
 
 // Delete subdomains of non-existents folders pointers (dangling links)
 if ($r=="5" || $r=="a") {
+  $html="/var/alternc/html";
   echo "========== ".$checks[5]." STARTING (".date("d/m/Y H:i:s").")\n";
-  echo "NOT YET IMPLEMENTED\n";
+  $r=mysql_query("SELECT m.uid,m.login,s.valeur,s.domaine,s.sub FROM sub_domaines s, membres m WHERE m.uid=s.compte AND s.type='VHOST' AND s.web_action='OK';");
+  while ($c=mysql_fetch_array($r)) {
+    $valeur=trim($c["valeur"],"/");
+    if (is_dir($html."/".substr($c["login"],0,1)."/".$c["login"]."/".$valeur)) { 
+      echo $c["sub"].(($c["sub"])?".":"").$c["domaine"]." OK\n";
+    } else {
+      echo $c["sub"].(($c["sub"])?".":"").$c["domaine"]." Points to '".$html."/".substr($c["login"],0,1)."/".$c["login"]."/".$valeur."' which doesn't exist. Deleting this subdomain\n";
+      if ($DONTDO) {
+	echo "calling dom->del_sub_domain('".$c["domaine"]."','".$c["sub"].",'VHOST','".$valeur."')\n";
+      } else {
+	if (!$mem->su($c["uid"])) {
+	  echo "WARNING: Cannot su to ".$c["uid"]." skipping.\n";
+	} else {
+	  $dom->lock();
+	  if (!$dom->del_sub_domain($c["domaine"],$c["sub"],'VHOST',$c["valeur"])) {
+	    echo "WARNING : del_sub_domain failed with '".$err->errstr()."'\n";
+	  }
+	  $dom->unlock();
+	  $mem->unsu();
+	}
+      }
+    }
+  }
   echo "========== ".$checks[5]." ENDING (".date("d/m/Y H:i:s").")\n";
 }
 
