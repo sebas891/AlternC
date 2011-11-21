@@ -4,7 +4,7 @@
 // TODO : we should accept a "-n" option that will mean : "don't do any action, but tell us" :) 
 
 $DONTDO=false;
-if ($argv[1]=="-n") {
+if (isset($argv[1]) && $argv[1]=="-n") {
   array_shift($argv);
   $DONTDO=true;
   echo "'DONT DO' mode enabled, will NOT do anything for real\n";
@@ -12,16 +12,27 @@ if ($argv[1]=="-n") {
     echo "EXECUTING $str\n";
     return true;
   }
+  function domq($query) {
+    echo "EXECUTING SQL $query\n";
+    return false;
+  }
 } else {
   function doexec($str) {
     return exec($str);
+  }
+  function domq($query) {
+    return mysql_query($query);
   }
 }
 
 echo "Connecting to AlternC MySQL database... "; flush();
 
 define('NOCHECK', 1);
-require_once("/var/alternc/bureau/class/config.php");
+@include_once("/var/alternc/bureau/class/config.php");
+if (!isset($dom)) {
+  echo "\n\nFATAL: AlternC's config file in /var/alternc/bureau/class/config.php was not found, please check your installation\n\n";
+  exit();
+}
 
 echo "done.\n";
 echo "------------------------------------------------------------\n";
@@ -215,7 +226,25 @@ if ($r=="5" || $r=="a") {
 // Delete ftp accounts of non-existents folders
 if ($r=="6" || $r=="a") {
   echo "========== ".$checks[6]." STARTING (".date("d/m/Y H:i:s").")\n";
-  echo "NOT YET IMPLEMENTED\n";
+  $html="/var/alternc/html";
+  $r=mysql_query("SELECT m.uid,m.login,f.homedir,f.name,f.id FROM ftpusers f LEFT JOIN membres m ON m.uid=f.uid;");
+  while ($c=mysql_fetch_array($r)) {
+    if (!$c["login"]) {
+      echo "WARNING: FTP login '".$c["name"]."' has a non-existent AlternC's account. I don't touch it, please investigate if required\n";
+    } else {
+      $shouldbe=$html."/".substr($c["login"],0,1)."/".$c["login"]."/";
+      if (substr($c["homedir"],0,strlen($shouldbe))!=$shouldbe) {
+	echo "WARNING: FTP login '".$c["name"]."' should start by '$shouldbe' but is '".$c["homedir"]."'. I don't touch it, please investigate if required\n";
+      } else {
+	if (is_dir($c["homedir"])) { 
+	  echo "FTP login '".$c["name"]."' OK\n";
+	} else {
+	  echo "WARNING: FTP login '".$c["name"]."' is pointing to a non-existent directory, deleting this account\n";
+	  domq("DELETE FROM ftpusers WHERE id='".$c["id"]."';");
+	}
+      }
+    }
+  }
   echo "========== ".$checks[6]." ENDING (".date("d/m/Y H:i:s").")\n";
 }
 
@@ -223,6 +252,12 @@ if ($r=="6" || $r=="a") {
 // Delete mailman mailing-lists in mailman alternc table who does not exists anymore in /var/lib/mailman/lists
 if ($r=="7" || $r=="a") {
   echo "========== ".$checks[7]." STARTING (".date("d/m/Y H:i:s").")\n";
+  /*
+  $mailman="/var/lib/mailman/lists";
+  $r=mysql_query("SELECT m.uid,m.login,a.list,a.domain,a.name FROM mailman a LEFT JOIN membres m ON m.uid=a.uid;");
+  while ($c=mysql_fetch_array($r)) {
+  }
+  */
   echo "NOT YET IMPLEMENTED\n";
   echo "========== ".$checks[7]." ENDING (".date("d/m/Y H:i:s").")\n";
 }
