@@ -1132,14 +1132,20 @@ class m_dom {
   /**
    * Returns the complete hosted domain list : 
    */
-  function get_domain_list($uid=-1) {
+  function get_domain_list($uid=-1, $nodns=true) {
   global $db,$err;
   $uid=intval($uid);
   $res=array();
+  if ( $nodns ) {
+    $sql=" gesdns=0 ";
+  } else {
+    $sql=" gesdns=1 ";
+	}
+
   if ($uid!=-1) {
-    $sql=" AND compte='$uid' ";
+    $sql.=" AND compte='$uid' ";
   }
-  $db->query("SELECT domaine FROM domaines WHERE gesdns=1 $sql ORDER BY domaine");
+  $db->query("SELECT domaine FROM domaines WHERE $sql ORDER BY domaine");
   while ($db->next_record()) {
     $res[]=$db->f("domaine");
   }
