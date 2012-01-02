@@ -29,6 +29,41 @@
 # ----------------------------------------------------------------------
 #
 
+#Default Query : fixperms for all account
+query="SELECT uid,login FROM membres"
+sub_dir=""
+
+#Two optionals argument
+# -l string : a specific login to fix
+# -u interger : a specifi uid to fix
+while getopts "l:u:d:" optname
+  do
+    case "$optname" in
+      "l")
+        query="SELECT uid,login FROM membres WHERE login LIKE '$OPTARG'"
+        ;;
+      "u")
+        query="SELECT uid,login FROM membres WHERE uid LIKE '$OPTARG'"
+        ;;
+      "d")
+        sub_dir="$OPTARG"
+        ;;
+      "?")
+        echo "Unknown option $OPTARG - stop processing"
+        exit
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG - stop processing"
+        exit
+        ;;
+      *)
+      # Should not occur
+        echo "Unknown error while processing options"
+        exit
+        ;;
+    esac
+  done
+
 CONFIG_FILE="/etc/alternc/local.sh"
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
@@ -55,7 +90,7 @@ doone() {
 	  echo "Setting rights and ownership for user $LOGIN having gid $GID"
       fi
       INITIALE=`echo $LOGIN |cut -c1`
-      REP="$ALTERNC_LOC/html/$INITIALE/$LOGIN"
+      REP="$ALTERNC_LOC/html/$INITIALE/$LOGIN/$sub_dir"
             
       find $REP -type d -exec chmod g+s \{\} \;
 	  chown -R 33.$GID $REP
@@ -63,5 +98,5 @@ doone() {
     done
 }
 
-mysql --defaults-file=/etc/alternc/my.cnf -B -e "select uid,login from membres" |grep -v ^uid|doone
+mysql --defaults-file=/etc/alternc/my.cnf -B -e "$query" |grep -v ^uid|doone
 
