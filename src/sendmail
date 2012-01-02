@@ -4,6 +4,7 @@
 
 $fr="";
 $rt="";
+$rp="";
 
 open(SM,"|/usr/sbin/sendmail -t -i");
 
@@ -15,6 +16,9 @@ while ($A ne "") {
     }
     if ($A=~/^Reply-to:(.*)/i) {
         $rt=$1;
+    }
+    if ($A=~/^Return-path:(.*)/i) {
+        $rp=$1;
     }
    chomp($A=<STDIN>);
 }
@@ -34,6 +38,11 @@ if (!$fr) {
 	print SM "Reply-To: $fr\n";
     }
     print SM "X-RealFrom: ".$user."\n";
+}
+
+#No Return-path then user account used (bounce directly to user)
+if (!rp) {
+    print SM "Return-path: ".$user."\n";
 }
 
 # 3. On ajoute la fameuse ligne vide :)
