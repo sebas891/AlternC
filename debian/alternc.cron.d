@@ -1,3 +1,6 @@
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
 # Every day at 4am, produce raw statistics
 0 4 * * *	root	/usr/lib/alternc/rawstat.daily
 
