@@ -1,6 +1,6 @@
 alternc (1.0.3) stable; urgency=high
   * Bugfix: the 'connect' button in the list of installed domains didn't work, make it work
-  * Bugfix: fixing PATH issue in update_domains that prevents the "rndc reload" 
+  * Bugfix: fixing RNDC RELOAD behavior issue when ADDING a domain name
 
  -- Benjamin Sonntag <benjamin@alternc.org>  Wed, 12 Oct 2011 18:00:00 +0200
 
