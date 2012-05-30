@@ -1,8 +1,9 @@
 alternc (1.0.3) stable; urgency=high
   * Bugfix: the 'connect' button in the list of installed domains didn't work, make it work
   * Bugfix: fixing RNDC RELOAD behavior issue when ADDING a domain name
+  * Bugfix: some values in sub_domaines.compte are set to 0 instead of the user-id, (mainly MX, due tu 1.0 migration issue)
 
- -- Benjamin Sonntag <benjamin@alternc.org>  Wed, 12 Oct 2011 18:00:00 +0200
+ -- Benjamin Sonntag <benjamin@alternc.org>  Wed, 30 May 2011 16:00:00 +0200
 
 alternc (1.0.2) stable; urgency=high
   * Bugfix: dependency on gamin OR fam : gamin is better for courier-imap and fam makes sasl imap auth fail
