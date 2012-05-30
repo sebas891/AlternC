@@ -11,6 +11,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Language-Team: team@alternc.org\n"
 "X-Generator: Emacs 21\n"
 
 #: ../admin/adm_add.php:36 ../admin/adm_deactivate.php:41
@@ -2615,10 +2617,6 @@ msgstr ""
 
 #: ../class/functions.php:415
 msgid "Not managed"
-msgstr ""
-
-#: ../class/lang_env.php:61 ../class/lang_env.php:69
-msgid ""
 msgstr ""
 
 #: ../class/m_err.php:66 ../class/m_err.php:94 ../class/m_err.php:96
