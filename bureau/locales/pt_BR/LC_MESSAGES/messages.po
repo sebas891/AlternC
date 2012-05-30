@@ -18,6 +18,8 @@
 #: ../admin/adm_tlddoedit.php:33 ../admin/adm_tldedit.php:33
 #: ../admin/adm_tld.php:33 ../admin/adm_variables.php:33
 #: ../admin/quotas_users.php:10 ../class/reset_stats_conf.php:6
+#: ../admin/dom_subdel.php:43 ../admin/dom_subdodel.php:43
+#: ../admin/dom_subdoedit.php:55 ../admin/dom_subedit.php:47
 msgid "This page is restricted to authorized staff"
 msgstr "Esta página é restringida à equipe de funcionários autorizada"
 
@@ -33,6 +35,7 @@ msgstr "Deletar as contas selecionadas"
 #: ../admin/hta_edit.php:102 ../admin/index.php:76
 #: ../admin/sql_getparam.php:50 ../admin/sql_list.php:94
 #: ../admin/sql_passchg.php:51 ../admin/sql_users_add.php:64
+#: ../admin/index.php:79
 #, fuzzy
 msgid "Username"
 msgstr "Nome de usúario"
@@ -64,6 +67,8 @@ msgstr "Pode mudar a senha"
 #: ../admin/dom_subdel.php:71 ../admin/mail_add.php:65
 #: ../admin/mail_edit.php:73 ../admin/sql_bck.php:87 ../admin/sql_del.php:81
 #: ../admin/sql_users_del.php:70 ../admin/trash_dateselect.php:39
+#: ../admin/dom_edit.php:191 ../admin/dom_edit.php:203
+#: ../admin/dom_subdel.php:80
 msgid "No"
 msgstr "Não"
 
@@ -77,6 +82,8 @@ msgstr "Não"
 #: ../admin/dom_subdel.php:70 ../admin/mail_add.php:66
 #: ../admin/mail_edit.php:74 ../admin/sql_bck.php:88 ../admin/sql_del.php:81
 #: ../admin/sql_users_del.php:70 ../admin/trash_dateselect.php:40
+#: ../admin/dom_edit.php:190 ../admin/dom_edit.php:202
+#: ../admin/dom_subdel.php:79
 msgid "Yes"
 msgstr "Sim"
 
@@ -435,6 +442,7 @@ msgid "Enter comma-separated name of other types"
 msgstr ""
 
 #: ../admin/adm_domstypeedit.php:98 ../admin/dom_edit.php:125
+#: ../admin/dom_edit.php:133
 msgid "Enabled"
 msgstr ""
 
@@ -505,6 +513,7 @@ msgstr ""
 #: ../admin/adm_list.php:192 ../admin/adm_passpolicy.php:152
 #: ../admin/adm_tld.php:76 ../admin/dom_edit.php:106 ../admin/ftp_list.php:82
 #: ../admin/mail_list.php:113 ../admin/sta2_list.php:68
+#: ../admin/dom_edit.php:109
 msgid "Edit"
 msgstr "Editar"
 
@@ -549,6 +558,7 @@ msgstr "Você não pode mudar sua senha"
 #: ../admin/sql_getparam.php:54 ../admin/sql_list.php:95
 #: ../admin/sql_passchg.php:52 ../admin/sql_users_add.php:68
 #: ../admin/sql_users_list.php:52 ../admin/sql_users_password.php:55
+#: ../admin/index.php:80 ../admin/index.php:97
 msgid "Password"
 msgstr "Senha"
 
@@ -690,6 +700,7 @@ msgid "Expiry"
 msgstr ""
 
 #: ../admin/adm_list.php:177 ../admin/dom_edit.php:126
+#: ../admin/dom_edit.php:134
 msgid "Disable"
 msgstr ""
 
@@ -745,7 +756,7 @@ msgstr ""
 
 #: ../admin/adm_mxaccount.php:89 ../admin/adm_slaveaccount.php:88
 #: ../admin/adm_slaveip.php:88 ../admin/bro_main.php:269
-#: ../admin/dom_edit.php:109
+#: ../admin/dom_edit.php:109 ../admin/dom_edit.php:115
 msgid "Delete"
 msgstr "Suprimir"
 
@@ -1059,11 +1070,12 @@ msgid "Save variables"
 msgstr ""
 
 #: ../admin/bro_editor.php:44 ../admin/bro_editor.php:50
+#: ../admin/bro_editor.php:53
 #, php-format
 msgid "Your file %s has been saved"
 msgstr "Seu arquivo %s foi salvado com sucesso"
 
-#: ../admin/bro_editor.php:58
+#: ../admin/bro_editor.php:58 ../admin/bro_editor.php:64
 msgid "File editing"
 msgstr "Edição de arquivo"
 
@@ -1071,15 +1083,15 @@ msgstr "Edição de arquivo"
 msgid "ctrl+click or shift+click and drag to resize the editing zone"
 msgstr ""
 
-#: ../admin/bro_editor.php:67
+#: ../admin/bro_editor.php:67 ../admin/bro_editor.php:77
 msgid "Save"
 msgstr "Salvar"
 
-#: ../admin/bro_editor.php:68
+#: ../admin/bro_editor.php:68 ../admin/bro_editor.php:78
 msgid "Save &amp; Quit"
 msgstr "Salva &amp; Sair"
 
-#: ../admin/bro_editor.php:69
+#: ../admin/bro_editor.php:69 ../admin/bro_editor.php:79
 msgid "Quit"
 msgstr "Sair"
 
@@ -1398,6 +1410,7 @@ msgstr "Seu domínio %s foi instalado com sucesso"
 #: ../admin/dom_doadd.php:55 ../admin/dom_dodel.php:56
 #: ../admin/dom_dodel.php:85 ../admin/dom_editdns.php:70
 #: ../admin/dom_subdodel.php:65 ../admin/hta_doedituser.php:61
+#: ../admin/dom_editdns.php:61 ../admin/dom_subdodel.php:72
 msgid "Click here to continue"
 msgstr "Clicar aqui para continuar"
 
@@ -1430,17 +1443,18 @@ msgstr "Domínio %s suprimido"
 msgid "The domain %s has been successfully deleted."
 msgstr "O domínio %s foi suprimido com sucesso."
 
-#: ../admin/dom_editdns.php:60
+#: ../admin/dom_editdns.php:60 ../admin/dom_editdns.php:51
 #, php-format
 msgid "Editing domain %s"
 msgstr "Editando o domínio %s"
 
-#: ../admin/dom_editdns.php:65
+#: ../admin/dom_editdns.php:65 ../admin/dom_editdns.php:56
 #, fuzzy, php-format
 msgid "The domain %s has been changed."
 msgstr "O domínio %s foi suprimido com sucesso."
 
 #: ../admin/dom_editdns.php:68 ../admin/dom_subdodel.php:61
+#: ../admin/dom_editdns.php:59 ../admin/dom_subdodel.php:68
 #, fuzzy
 msgid "The modifications will take effect at %time.  Server time is %now."
 msgstr "As modificações estaram actualizadas em 5 minutos."
@@ -1523,61 +1537,61 @@ msgstr "Secundário-domínios"
 msgid "Type"
 msgstr ""
 
-#: ../admin/dom_edit.php:129
+#: ../admin/dom_edit.php:129 ../admin/dom_edit.php:137
 msgid "Activation pending"
 msgstr ""
 
-#: ../admin/dom_edit.php:132
+#: ../admin/dom_edit.php:132 ../admin/dom_edit.php:140
 msgid "Disabled"
 msgstr ""
 
-#: ../admin/dom_edit.php:133
+#: ../admin/dom_edit.php:133 ../admin/dom_edit.php:141
 msgid "Enable"
 msgstr ""
 
-#: ../admin/dom_edit.php:136
+#: ../admin/dom_edit.php:136 ../admin/dom_edit.php:144
 msgid "Desactivation pending"
 msgstr ""
 
-#: ../admin/dom_edit.php:143
+#: ../admin/dom_edit.php:143 ../admin/dom_edit.php:152
 msgid "Update pending"
 msgstr ""
 
-#: ../admin/dom_edit.php:146
+#: ../admin/dom_edit.php:146 ../admin/dom_edit.php:155
 #, fuzzy
 msgid "Deletion pending"
 msgstr "Suprimando o secundário-domínio %s"
 
-#: ../admin/dom_edit.php:174
+#: ../admin/dom_edit.php:174 ../admin/dom_edit.php:183
 #, fuzzy
 msgid "DNS & Email parameters"
 msgstr "Parâmetros DNS"
 
-#: ../admin/dom_edit.php:179
+#: ../admin/dom_edit.php:179 ../admin/dom_edit.php:188
 msgid "Manage the DNS on the server ?"
 msgstr "Administrar o DNS neste servidor ?"
 
-#: ../admin/dom_edit.php:190
+#: ../admin/dom_edit.php:190 ../admin/dom_edit.php:199
 #, fuzzy
 msgid "Manage the Emails Addresses of this domain on the server?"
 msgstr "Administrar o DNS neste servidor ?"
 
-#: ../admin/dom_edit.php:197
+#: ../admin/dom_edit.php:197 ../admin/dom_edit.php:206
 msgid ""
 "Warning: If you set this to 'no', all your email accounts and aliases on "
 "this domain will be immediately deleted."
 msgstr ""
 
-#: ../admin/dom_edit.php:199
+#: ../admin/dom_edit.php:199 ../admin/dom_edit.php:208
 msgid "Submit the changes"
 msgstr "Submeter as mudanças"
 
-#: ../admin/dom_edit.php:204
+#: ../admin/dom_edit.php:204 ../admin/dom_edit.php:213
 #, fuzzy
 msgid "Domain removal"
 msgstr "Nome do Domínio"
 
-#: ../admin/dom_edit.php:207
+#: ../admin/dom_edit.php:207 ../admin/dom_edit.php:216
 #, php-format
 msgid "help_domain_del %s"
 msgstr ""
@@ -1585,31 +1599,32 @@ msgstr ""
 "suprimirá todo o ftp, correios, envi-listas ... associadas com estedomínio e "
 "os sécondarios domínios dele"
 
-#: ../admin/dom_edit.php:210
+#: ../admin/dom_edit.php:210 ../admin/dom_edit.php:219
 #, php-format
 msgid "Delete %s from this server"
 msgstr ""
 
-#: ../admin/dom_subdel.php:48
+#: ../admin/dom_subdel.php:48 ../admin/dom_subdel.php:57
 #, php-format
 msgid "Deleting subdomain %s"
 msgstr "Suprimando o secundário-domínio %s"
 
-#: ../admin/dom_subdel.php:67
+#: ../admin/dom_subdel.php:67 ../admin/dom_subdel.php:76
 msgid "WARNING : Confirm the deletion of the subdomain"
 msgstr "AVISO : Confirmar o apagamento do secundário-domínio"
 
-#: ../admin/dom_subdodel.php:50
+#: ../admin/dom_subdodel.php:50 ../admin/dom_subdodel.php:57
 #, fuzzy, php-format
 msgid "Deleting the subdomain %s:"
 msgstr "Suprimando o secundário-domínio %s"
 
 #: ../admin/dom_subdoedit.php:65 ../admin/dom_substatus.php:27
+#: ../admin/dom_subdoedit.php:73
 #, fuzzy
 msgid "The modifications will take effect at %time. Server time is %now."
 msgstr "As modificações estaram actualizadas em 5 minutos."
 
-#: ../admin/dom_subedit.php:51
+#: ../admin/dom_subedit.php:51 ../admin/dom_subedit.php:59
 #, fuzzy
 msgid "Editing subdomain"
 msgstr "Editando o domínio %s"
@@ -1656,7 +1671,7 @@ msgstr "Mudar esta conta FTP"
 msgid "FTP accounts list"
 msgstr "Lista de contas FTP"
 
-#: ../admin/head.php:55
+#: ../admin/head.php:55 ../admin/head.php:59
 msgid ""
 "Administrator session. you may <a href='adm_login.php'>return to your "
 "account</a> or <a href='adm_cancel.php'>cancel this feature</a>"
@@ -1769,43 +1784,44 @@ msgstr "Senha inicial"
 msgid "Unprotect the checked folders"
 msgstr "Unprotect the checked folders"
 
-#: ../admin/index.php:57
+#: ../admin/index.php:57 ../admin/index.php:60
 #, fuzzy
 msgid "Web Hosting Control Panel"
 msgstr "Painel de controle do Administrador"
 
-#: ../admin/index.php:71
+#: ../admin/index.php:71 ../admin/index.php:74
 msgid ""
 "To connect to the hosting control panel, enter your AlternC's login and "
 "password in the following form and click 'Enter'"
 msgstr ""
 
-#: ../admin/index.php:75
+#: ../admin/index.php:75 ../admin/index.php:78
 #, fuzzy
 msgid "AlternC access"
 msgstr "Lista de contas FTP"
 
-#: ../admin/index.php:78 ../admin/index.php:95
+#: ../admin/index.php:78 ../admin/index.php:95 ../admin/index.php:81
+#: ../admin/index.php:98
 msgid "Enter"
 msgstr ""
 
-#: ../admin/index.php:85
+#: ../admin/index.php:85 ../admin/index.php:88
 msgid ""
 "If you want to read your mail, enter your Email address and password in the "
 "following form and click 'Enter'"
 msgstr ""
 
-#: ../admin/index.php:91
+#: ../admin/index.php:91 ../admin/index.php:94
 #, fuzzy
 msgid "Webmail Access"
 msgstr "Acesso Webmail"
 
-#: ../admin/index.php:92
+#: ../admin/index.php:92 ../admin/index.php:95
 #, fuzzy
 msgid "Email Address"
 msgstr "Endereço email"
 
-#: ../admin/index.php:106
+#: ../admin/index.php:106 ../admin/index.php:109
 msgid "You must accept the session cookie to log-in"
 msgstr "Você precisa aceitar o cookie da sessão para o login"
 
@@ -2038,14 +2054,15 @@ msgid "OK"
 msgstr ""
 
 #: ../admin/mem_logout.php:38 ../admin/mem_logout.php:43
+#: ../admin/mem_logout.php:41 ../admin/mem_logout.php:46
 msgid "Disconnected"
 msgstr ""
 
-#: ../admin/mem_logout.php:45
+#: ../admin/mem_logout.php:45 ../admin/mem_logout.php:48
 msgid "You have been logged out of your administration desktop."
 msgstr ""
 
-#: ../admin/mem_logout.php:46
+#: ../admin/mem_logout.php:46 ../admin/mem_logout.php:49
 #, fuzzy
 msgid "Click here to log in"
 msgstr "Clicar aqui para continuar"
@@ -2821,7 +2838,7 @@ msgstr "Controlado localemente"
 # Copyright (c) 2007 the AlternC Development Team
 # <tech@alternc.org>
 # $Id: admin.po,v 1.2 2003/06/09 14:36:08 root Exp $
-#: ../class/lang_env.php:61
+#: ../class/lang_env.php:61 ../class/lang_env.php:69
 msgid ""
 msgstr ""
 "Project-Id-Version: $Id: admin.po,v 1.2 2003/06/09 14:36:08 root Exp $\n"

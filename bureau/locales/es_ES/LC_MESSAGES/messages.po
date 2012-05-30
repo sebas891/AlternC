@@ -18,6 +18,8 @@
 #: ../admin/adm_tlddoedit.php:33 ../admin/adm_tldedit.php:33
 #: ../admin/adm_tld.php:33 ../admin/adm_variables.php:33
 #: ../admin/quotas_users.php:10 ../class/reset_stats_conf.php:6
+#: ../admin/dom_subdel.php:43 ../admin/dom_subdodel.php:43
+#: ../admin/dom_subdoedit.php:55 ../admin/dom_subedit.php:47
 msgid "This page is restricted to authorized staff"
 msgstr "Esta página está reservada a los administradores"
 
@@ -33,6 +35,7 @@ msgstr "Suprimir este tipo de cuenta"
 #: ../admin/hta_edit.php:102 ../admin/index.php:76
 #: ../admin/sql_getparam.php:50 ../admin/sql_list.php:94
 #: ../admin/sql_passchg.php:51 ../admin/sql_users_add.php:64
+#: ../admin/index.php:79
 msgid "Username"
 msgstr "Nombre de usuario"
 
@@ -64,6 +67,8 @@ msgstr "¿Puede cambiar su contraseña?"
 #: ../admin/dom_subdel.php:71 ../admin/mail_add.php:65
 #: ../admin/mail_edit.php:73 ../admin/sql_bck.php:87 ../admin/sql_del.php:81
 #: ../admin/sql_users_del.php:70 ../admin/trash_dateselect.php:39
+#: ../admin/dom_edit.php:191 ../admin/dom_edit.php:203
+#: ../admin/dom_subdel.php:80
 msgid "No"
 msgstr "No"
 
@@ -77,6 +82,8 @@ msgstr "No"
 #: ../admin/dom_subdel.php:70 ../admin/mail_add.php:66
 #: ../admin/mail_edit.php:74 ../admin/sql_bck.php:88 ../admin/sql_del.php:81
 #: ../admin/sql_users_del.php:70 ../admin/trash_dateselect.php:40
+#: ../admin/dom_edit.php:190 ../admin/dom_edit.php:202
+#: ../admin/dom_subdel.php:79
 msgid "Yes"
 msgstr "Sí"
 
@@ -436,6 +443,7 @@ msgid "Enter comma-separated name of other types"
 msgstr ""
 
 #: ../admin/adm_domstypeedit.php:98 ../admin/dom_edit.php:125
+#: ../admin/dom_edit.php:133
 msgid "Enabled"
 msgstr ""
 
@@ -506,6 +514,7 @@ msgstr ""
 #: ../admin/adm_list.php:192 ../admin/adm_passpolicy.php:152
 #: ../admin/adm_tld.php:76 ../admin/dom_edit.php:106 ../admin/ftp_list.php:82
 #: ../admin/mail_list.php:113 ../admin/sta2_list.php:68
+#: ../admin/dom_edit.php:109
 msgid "Edit"
 msgstr "Modificar"
 
@@ -549,6 +558,7 @@ msgstr "No estás autorizado a cambiar tu contraseña"
 #: ../admin/sql_getparam.php:54 ../admin/sql_list.php:95
 #: ../admin/sql_passchg.php:52 ../admin/sql_users_add.php:68
 #: ../admin/sql_users_list.php:52 ../admin/sql_users_password.php:55
+#: ../admin/index.php:80 ../admin/index.php:97
 msgid "Password"
 msgstr "Contraseña"
 
@@ -685,6 +695,7 @@ msgid "Expiry"
 msgstr "Expiración"
 
 #: ../admin/adm_list.php:177 ../admin/dom_edit.php:126
+#: ../admin/dom_edit.php:134
 msgid "Disable"
 msgstr ""
 
@@ -742,7 +753,7 @@ msgstr "Nombre de usuario"
 
 #: ../admin/adm_mxaccount.php:89 ../admin/adm_slaveaccount.php:88
 #: ../admin/adm_slaveip.php:88 ../admin/bro_main.php:269
-#: ../admin/dom_edit.php:109
+#: ../admin/dom_edit.php:109 ../admin/dom_edit.php:115
 msgid "Delete"
 msgstr "Borrar"
 
@@ -1074,11 +1085,12 @@ msgid "Save variables"
 msgstr "Guardar la configuración"
 
 #: ../admin/bro_editor.php:44 ../admin/bro_editor.php:50
+#: ../admin/bro_editor.php:53
 #, php-format
 msgid "Your file %s has been saved"
 msgstr "Tu archivo %s fue guardado"
 
-#: ../admin/bro_editor.php:58
+#: ../admin/bro_editor.php:58 ../admin/bro_editor.php:64
 msgid "File editing"
 msgstr "Editar archivo"
 
@@ -1086,15 +1098,15 @@ msgstr "Editar archivo"
 msgid "ctrl+click or shift+click and drag to resize the editing zone"
 msgstr ""
 
-#: ../admin/bro_editor.php:67
+#: ../admin/bro_editor.php:67 ../admin/bro_editor.php:77
 msgid "Save"
 msgstr "Guardar"
 
-#: ../admin/bro_editor.php:68
+#: ../admin/bro_editor.php:68 ../admin/bro_editor.php:78
 msgid "Save &amp; Quit"
 msgstr "Guardar y Salir"
 
-#: ../admin/bro_editor.php:69
+#: ../admin/bro_editor.php:69 ../admin/bro_editor.php:79
 msgid "Quit"
 msgstr "Salir"
 
@@ -1409,6 +1421,7 @@ msgstr "Tu nuevo dominio %s fue instalado con éxito"
 #: ../admin/dom_doadd.php:55 ../admin/dom_dodel.php:56
 #: ../admin/dom_dodel.php:85 ../admin/dom_editdns.php:70
 #: ../admin/dom_subdodel.php:65 ../admin/hta_doedituser.php:61
+#: ../admin/dom_editdns.php:61 ../admin/dom_subdodel.php:72
 msgid "Click here to continue"
 msgstr "Presiona aquí para seguir"
 
@@ -1442,17 +1455,18 @@ msgstr "Dominio %s borrado"
 msgid "The domain %s has been successfully deleted."
 msgstr "El dominio %s fue borrado."
 
-#: ../admin/dom_editdns.php:60
+#: ../admin/dom_editdns.php:60 ../admin/dom_editdns.php:51
 #, php-format
 msgid "Editing domain %s"
 msgstr "Modificar dominio %s"
 
-#: ../admin/dom_editdns.php:65
+#: ../admin/dom_editdns.php:65 ../admin/dom_editdns.php:56
 #, php-format
 msgid "The domain %s has been changed."
 msgstr "El dominio %s fue modificado."
 
 #: ../admin/dom_editdns.php:68 ../admin/dom_subdodel.php:61
+#: ../admin/dom_editdns.php:59 ../admin/dom_subdodel.php:68
 msgid "The modifications will take effect at %time.  Server time is %now."
 msgstr ""
 "Las modificaciones serán efectivas a las %time.  La hora del servidor es "
@@ -1535,63 +1549,63 @@ msgstr "Subdominios"
 msgid "Type"
 msgstr ""
 
-#: ../admin/dom_edit.php:129
+#: ../admin/dom_edit.php:129 ../admin/dom_edit.php:137
 msgid "Activation pending"
 msgstr ""
 
-#: ../admin/dom_edit.php:132
+#: ../admin/dom_edit.php:132 ../admin/dom_edit.php:140
 msgid "Disabled"
 msgstr ""
 
-#: ../admin/dom_edit.php:133
+#: ../admin/dom_edit.php:133 ../admin/dom_edit.php:141
 msgid "Enable"
 msgstr ""
 
-#: ../admin/dom_edit.php:136
+#: ../admin/dom_edit.php:136 ../admin/dom_edit.php:144
 #, fuzzy
 msgid "Desactivation pending"
 msgstr "Desactivar"
 
-#: ../admin/dom_edit.php:143
+#: ../admin/dom_edit.php:143 ../admin/dom_edit.php:152
 #, fuzzy
 msgid "Update pending"
 msgstr "Volver a cargar esta página"
 
-#: ../admin/dom_edit.php:146
+#: ../admin/dom_edit.php:146 ../admin/dom_edit.php:155
 #, fuzzy
 msgid "Deletion pending"
 msgstr "Suprimir un usuario"
 
-#: ../admin/dom_edit.php:174
+#: ../admin/dom_edit.php:174 ../admin/dom_edit.php:183
 #, fuzzy
 msgid "DNS & Email parameters"
 msgstr "Parámetros DNS"
 
-#: ../admin/dom_edit.php:179
+#: ../admin/dom_edit.php:179 ../admin/dom_edit.php:188
 msgid "Manage the DNS on the server ?"
 msgstr "¿Administrar el DNS de este dominio?"
 
-#: ../admin/dom_edit.php:190
+#: ../admin/dom_edit.php:190 ../admin/dom_edit.php:199
 #, fuzzy
 msgid "Manage the Emails Addresses of this domain on the server?"
 msgstr "¿Administrar el DNS de este dominio?"
 
-#: ../admin/dom_edit.php:197
+#: ../admin/dom_edit.php:197 ../admin/dom_edit.php:206
 msgid ""
 "Warning: If you set this to 'no', all your email accounts and aliases on "
 "this domain will be immediately deleted."
 msgstr ""
 
-#: ../admin/dom_edit.php:199
+#: ../admin/dom_edit.php:199 ../admin/dom_edit.php:208
 msgid "Submit the changes"
 msgstr "Validar cambios"
 
-#: ../admin/dom_edit.php:204
+#: ../admin/dom_edit.php:204 ../admin/dom_edit.php:213
 #, fuzzy
 msgid "Domain removal"
 msgstr "Nombre de dominio"
 
-#: ../admin/dom_edit.php:207
+#: ../admin/dom_edit.php:207 ../admin/dom_edit.php:216
 #, php-format
 msgid "help_domain_del %s"
 msgstr ""
@@ -1600,32 +1614,33 @@ msgstr ""
 "listas de correos, etc de este dominio, así como todos los subdominios "
 "relacionados!"
 
-#: ../admin/dom_edit.php:210
+#: ../admin/dom_edit.php:210 ../admin/dom_edit.php:219
 #, php-format
 msgid "Delete %s from this server"
 msgstr ""
 
-#: ../admin/dom_subdel.php:48
+#: ../admin/dom_subdel.php:48 ../admin/dom_subdel.php:57
 #, php-format
 msgid "Deleting subdomain %s"
 msgstr "Suprimir subdominio %s"
 
-#: ../admin/dom_subdel.php:67
+#: ../admin/dom_subdel.php:67 ../admin/dom_subdel.php:76
 msgid "WARNING : Confirm the deletion of the subdomain"
 msgstr "ADVERTENCIA : Confirma la supresión del subdominio siguiente"
 
-#: ../admin/dom_subdodel.php:50
+#: ../admin/dom_subdodel.php:50 ../admin/dom_subdodel.php:57
 #, php-format
 msgid "Deleting the subdomain %s:"
 msgstr "Suprimesión del subdominio %s:"
 
 #: ../admin/dom_subdoedit.php:65 ../admin/dom_substatus.php:27
+#: ../admin/dom_subdoedit.php:73
 msgid "The modifications will take effect at %time. Server time is %now."
 msgstr ""
 "Las modificaciones serán efectivas a las %time.  La hora del servidor es "
 "acutalmente %now."
 
-#: ../admin/dom_subedit.php:51
+#: ../admin/dom_subedit.php:51 ../admin/dom_subedit.php:59
 #, fuzzy
 msgid "Editing subdomain"
 msgstr "Modificar dominio %s"
@@ -1671,7 +1686,7 @@ msgstr "Modificar cuenta FTP."
 msgid "FTP accounts list"
 msgstr "Lista de cuentas FTP"
 
-#: ../admin/head.php:55
+#: ../admin/head.php:55 ../admin/head.php:59
 msgid ""
 "Administrator session. you may <a href='adm_login.php'>return to your "
 "account</a> or <a href='adm_cancel.php'>cancel this feature</a>"
@@ -1782,43 +1797,44 @@ msgstr "Contraseña inicial"
 msgid "Unprotect the checked folders"
 msgstr "Quitar protección a las carpetas marcadas"
 
-#: ../admin/index.php:57
+#: ../admin/index.php:57 ../admin/index.php:60
 #, fuzzy
 msgid "Web Hosting Control Panel"
 msgstr "Panel Administrador"
 
-#: ../admin/index.php:71
+#: ../admin/index.php:71 ../admin/index.php:74
 msgid ""
 "To connect to the hosting control panel, enter your AlternC's login and "
 "password in the following form and click 'Enter'"
 msgstr ""
 
-#: ../admin/index.php:75
+#: ../admin/index.php:75 ../admin/index.php:78
 #, fuzzy
 msgid "AlternC access"
 msgstr "Lista de cuentas FTP"
 
-#: ../admin/index.php:78 ../admin/index.php:95
+#: ../admin/index.php:78 ../admin/index.php:95 ../admin/index.php:81
+#: ../admin/index.php:98
 msgid "Enter"
 msgstr "Entrar"
 
-#: ../admin/index.php:85
+#: ../admin/index.php:85 ../admin/index.php:88
 msgid ""
 "If you want to read your mail, enter your Email address and password in the "
 "following form and click 'Enter'"
 msgstr ""
 
-#: ../admin/index.php:91
+#: ../admin/index.php:91 ../admin/index.php:94
 #, fuzzy
 msgid "Webmail Access"
 msgstr "Acceso Webmail"
 
-#: ../admin/index.php:92
+#: ../admin/index.php:92 ../admin/index.php:95
 #, fuzzy
 msgid "Email Address"
 msgstr "Dirección de correo"
 
-#: ../admin/index.php:106
+#: ../admin/index.php:106 ../admin/index.php:109
 msgid "You must accept the session cookie to log-in"
 msgstr "Debe aceptar el cookie de sesión para poder conectarte"
 
@@ -2072,14 +2088,15 @@ msgid "OK"
 msgstr "OK"
 
 #: ../admin/mem_logout.php:38 ../admin/mem_logout.php:43
+#: ../admin/mem_logout.php:41 ../admin/mem_logout.php:46
 msgid "Disconnected"
 msgstr "Desconectado"
 
-#: ../admin/mem_logout.php:45
+#: ../admin/mem_logout.php:45 ../admin/mem_logout.php:48
 msgid "You have been logged out of your administration desktop."
 msgstr "Fuiste desconectado de la interfaz de administración."
 
-#: ../admin/mem_logout.php:46
+#: ../admin/mem_logout.php:46 ../admin/mem_logout.php:49
 msgid "Click here to log in"
 msgstr "Presiona aquí para volver a conectarte"
 
@@ -2836,7 +2853,7 @@ msgstr "No manejado"
 #
 # Bruno Marmier <bruno@marmier.net>, 2003, 2004.
 # Daniel Viñar Ulriksen <dani@belil.net>, 2008.
-#: ../class/lang_env.php:61
+#: ../class/lang_env.php:61 ../class/lang_env.php:69
 msgid ""
 msgstr ""
 "Project-Id-Version: messages\n"
