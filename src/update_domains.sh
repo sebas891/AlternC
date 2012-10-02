@@ -1,6 +1,9 @@
 #!/bin/bash
 # Update domain next-gen by fufroma
 
+# Usefull for debug
+#set -x
+
 for CONFIG_FILE in \
       /etc/alternc/local.sh \
       /usr/lib/alternc/functions.sh \
@@ -55,7 +58,7 @@ mysql_query "update sub_domaines sd, domaines d set sd.web_action = 'DELETE' whe
 
 # Sub_domaines we want to delete
 # sub_domaines.web_action = delete
-for sub in $( mysql_query "select concat_ws('$B',lower(sd.type), if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine)) from sub_domaines sd where web_action ='DELETE';") ; do
+for sub in $( mysql_query "select concat_ws('$B',lower(sd.type), if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine)) from sub_domaines sd, domaines_type dt where lower(sd.type)=lower(dt.name) and dt.only_dns = false and web_action ='DELETE';") ; do
     host_delete ${sub/$B/ }
     mysql_query "delete from sub_domaines where concat_ws('$B',lower(type), if(length(sub)>0,concat_ws('.',sub,domaine),domaine)) = '$sub' and web_action ='DELETE';"
     echo 1 > "$RELOAD_WEB"
@@ -65,28 +68,69 @@ done
 # sub_domaines.web_action = update and sub_domains.only_dns = false
 IFS="$NEWIFS"
 mysql_query "
-select concat_ws('$IFS',lower(sd.type), if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine), sd.valeur )
-from sub_domaines sd
-where sd.web_action ='UPDATE'
-;" | while read type domain valeur ; do
+select 
+  concat_ws('$IFS',lower(sd.type), if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine), sd.valeur )
+from 
+  sub_domaines sd, 
+  domaines_type dt
+where 
+  lower(sd.type)=lower(dt.name) and 
+  dt.only_dns = false and 
+  sd.web_action ='UPDATE'
+;"|while read type domain valeur ; do
     host_create "$type" "$domain" "$valeur"
     mysql_query "update sub_domaines sd set web_action='OK',web_result='$?' where lower(sd.type)='$type' and if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine)='$domain' and sd.valeur='$valeur'; "
     echo 1 > "$RELOAD_WEB"
 done
 
 # Domaine to enable
-mysql_query "select concat_ws('$IFS',lower(sd.type),if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine),sd.valeur) from sub_domaines sd where sd.enable ='ENABLE' ;"|while read type domain valeur ; do
+mysql_query "
+select 
+  concat_ws('$IFS',lower(sd.type),if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine),sd.valeur) 
+from 
+  sub_domaines sd, 
+  domaines_type dt 
+where 
+  lower(sd.type)=lower(dt.name) and 
+  dt.only_dns = false and
+  sd.enable ='ENABLE' 
+;"|while read type domain valeur ; do
     host_enable "$type" "$domain" "$valeur"
     mysql_query "update sub_domaines sd set enable='ENABLED' where lower(sd.type)='$type' and if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine)='$domain' and sd.valeur='$valeur';"
     echo 1 > "$RELOAD_WEB"
 done
 
 # Domains to disable
-mysql_query "select concat_ws('$IFS',lower(sd.type),if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine),sd.valeur) from sub_domaines sd where sd.enable ='DISABLE' ;"|while read type domain valeur ; do
+mysql_query "
+select 
+  concat_ws('$IFS',lower(sd.type),if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine),sd.valeur) 
+from 
+  sub_domaines sd, 
+  domaines_type dt
+where 
+  lower(sd.type)=lower(dt.name) and 
+  dt.only_dns = false and
+  sd.enable ='DISABLE' 
+;"|while read type domain valeur ; do
     host_disable "$type" "$domain" "$valeur"
     mysql_query "update sub_domaines sd set enable='DISABLED' where lower(sd.type)='$type' and if(length(sd.sub)>0,concat_ws('.',sd.sub,sd.domaine),sd.domaine)='$domain' and sd.valeur='$valeur';"
     echo 1 > "$RELOAD_WEB"
 done
+
+# Delete entry when the entry in only-dns. We do not need to launch any hooks or other things
+# If someone need a hooks on a dns-only entry, he'll uncheck the dns-only checkbox and will write his hooks with a brain (his own brain eventually).
+mysql_query "delete sd from sub_domaines sd, domaines_type dt where lower(sd.type)=lower(dt.name) and dt.only_dns = true and sd.web_action ='DELETE';"
+
+# We do not set directly to ENABLED or DISABLED because the cron is needed to do an action on the dns
+# even if no actions are done on the sub_domaine itself
+# Update only-dns entries.
+mysql_query "update sub_domaines sd, domaines_type dt set sd.web_action='OK' where lower(sd.type)=lower(dt.name) and dt.only_dns = true and sd.web_action ='UPDATE';"
+
+# Enable only-dns entries.
+mysql_query "update sub_domaines sd, domaines_type dt set sd.enable='ENABLED' where lower(sd.type)=lower(dt.name) and dt.only_dns = true and sd.enable ='ENABLE';"
+
+# Disable only-dns entries.
+mysql_query "update sub_domaines sd, domaines_type dt set sd.enable='DISABLED' where lower(sd.type)=lower(dt.name) and dt.only_dns = true and sd.enable ='DISABLE';"
 
 # Domains we do not want to be the DNS serveur anymore :
 # domaines.dns_action = UPDATE and domaines.gesdns = 0
