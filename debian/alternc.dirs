@@ -8,6 +8,7 @@ etc/alternc/functions_hosting
 etc/bind
 etc/bind/templates
 etc/cron.d
+etc/incron.d
 etc/phpmyadmin
 etc/postfix
 etc/sudoers.d
