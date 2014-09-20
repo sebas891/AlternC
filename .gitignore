@@ -26,6 +26,10 @@ debian/alternc-upnp.substvars
 debian/alternc.debhelper.log
 debian/alternc.postrm.debhelper
 debian/alternc.substvars
+debian/alternc-ssl
+debian/alternc-ssl.debhelper.log
+debian/alternc-ssl.postrm.debhelper
+debian/alternc-ssl.substvars
 debian/files
 lang/de_DE.po
 lang/es_ES.po

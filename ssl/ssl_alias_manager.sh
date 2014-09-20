@@ -1,7 +1,10 @@
 #!/bin/bash
 
+rm -f /var/run/alternc/generate_certif_alias
+
 # Launched by incron when /tmp/generate_certif_alias exists
 # regenerate the list of global aliases used by Comodo for certificate ownership validation
+# FIXME: how do we lock that, ensuring we don't launch this more than once ?
 APACHECONF=/etc/apache2/conf.d/alternc-ssl_cert-alias.conf
 TMP=/tmp/alternc-ssl_cert-alias_${$}.tmp
 FILEDIR=/var/lib/alternc/ssl-cert-alias

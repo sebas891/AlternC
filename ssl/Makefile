@@ -22,7 +22,7 @@ install:
 	install -m 0755 -g root -o root update_ssl.php $(DESTDIR)/usr/lib/alternc/
 # incron
 	install -m 0755 -g root -o root ssl_alias_manager.sh $(DESTDIR)/usr/lib/alternc/
-	install -m 0644 -g root -o root 
+	install -m 0644 -g root -o root alternc-ssl.incron.d $(DESTDIR)/etc/incron.d/
 
 	install -m 0644 -g 1999 -o root panel/class/m_ssl.php $(DESTDIR)/usr/share/alternc/panel/class/
 	install -m 0644 -g 1999 -o root panel/admin/*.php $(DESTDIR)/usr/share/alternc/panel/admin/

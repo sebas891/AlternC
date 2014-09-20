@@ -42,6 +42,7 @@ class m_ssl {
   const FILTER_EXPIRED = 4;
   const FILTER_SHARED = 8;
 
+  const SSL_INCRON_FILE = "/var/run/alternc/generate_certif_alias";
 
   /* ----------------------------------------------------------------- */
   /**
@@ -424,7 +425,7 @@ class m_ssl {
       return false;
     }
     $db->query("INSERT INTO certif_alias SET name='".addslashes($name)."', value='".addslashes($value)."', uid=".intval($cuid).";");
-    touch("/tmp/generate_certif_alias");
+    touch(self::SSL_INCRON_FILE);
     return true;
   }
 
@@ -444,7 +445,7 @@ class m_ssl {
       return false;
     }
     $db->query("DELETE FROM certif_alias WHERE name='".addslashes($name)."' AND uid=".intval($cuid).";");
-    touch("/tmp/generate_certif_alias");
+    touch(self::SSL_INCRON_FILE);
     return true;
   }
 
