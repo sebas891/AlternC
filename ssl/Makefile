@@ -36,3 +36,5 @@ install:
 	ln -s $(DESTDIR)/etc/alternc/functions_hosting/hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_roundcube-ssl.sh
 	ln -s $(DESTDIR)/etc/alternc/functions_hosting/hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_squirrelmail-ssl.sh
 	ln -s $(DESTDIR)/etc/alternc/functions_hosting/hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_php52-ssl.sh
+# api
+	install -m 0644 -g root -o root api/Ssl.php $(DESTDIR)/usr/share/php/Alternc/Api/Object/

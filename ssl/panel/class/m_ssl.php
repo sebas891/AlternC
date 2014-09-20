@@ -274,7 +274,7 @@ class m_ssl {
    * @return integer the ID of the newly created certificate in the table
    * or false if an error occurred
    */
-  function import_cert($key,$crt,$chain) {
+  function import_cert($key,$crt,$chain="") {
     global $cuid, $err, $db;
     $err->log("ssl","import_cert");
     
@@ -306,7 +306,7 @@ class m_ssl {
    * (finalize an enrollment process)
    * @param $certid integer the ID in the database of the SSL Certificate
    * @param $crt string the X.509  PEM-encoded certificate, which *must* 
-   * be the one signinf the private RSA key in certificate $certid
+   * be the one signing the private RSA key in certificate $certid
    * @param $chain string the X.509 PEM-encoded list of SSL Certificate chain if intermediate authorities
    * @return integer the ID of the updated certificate in the table
    * or false if an error occurred

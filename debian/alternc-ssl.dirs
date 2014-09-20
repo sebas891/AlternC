@@ -11,3 +11,4 @@ usr/share/alternc/panel/locales/fr_FR/LC_MESSAGES
 var/lib/alternc/backups
 etc/alternc/functions_hosting
 etc/incron.d
+usr/share/php/Alternc/Api/Object
