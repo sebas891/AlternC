@@ -2,7 +2,7 @@
 
 
 /* Global variables (AlternC configuration) */
-require_once(__DIR__."/../../class/local.php");
+require_once("/usr/share/alternc/panel/class/local.php");
 
 // Define constants from vars of /etc/alternc/local.sh
 // The you can't choose where is the AlternC Panel 
@@ -21,10 +21,9 @@ $root=ALTERNC_PANEL."/";
 
 require_once($root."class/db_mysql.php");
 require_once($root."class/functions.php");
-require_once($root."class/variables.php");
 
 
-global $L_MYSQL_HOST,$L_MYSQL_DATABASE,$L_MYSQL_LOGIN,$L_MYSQL_PWD;
+global $L_MYSQL_HOST,$L_MYSQL_DATABASE,$L_MYSQL_LOGIN,$L_MYSQL_PWD,$db,$dbh;
 
 class DB_system extends DB_Sql {
   var $Host,$Database,$User,$Password;
@@ -71,6 +70,7 @@ closedir($c);
 /* Language */
 //include_once("../../class/lang_env.php");
 
+$variables=new m_variables();
 $mem=new m_mem();
 $err=new m_err();
 $authip=new m_authip();
