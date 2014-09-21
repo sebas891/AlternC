@@ -22,12 +22,13 @@ install:
 	install -m 0755 -g root -o root update_ssl.php $(DESTDIR)/usr/lib/alternc/
 # incron
 	install -m 0755 -g root -o root ssl_alias_manager.sh $(DESTDIR)/usr/lib/alternc/
-	install -m 0644 -g root -o root alternc-ssl.incron.d $(DESTDIR)/etc/incron.d/
+	install -m 0644 -g root -o root alternc-ssl.incron.d $(DESTDIR)/etc/incron.d/alternc-ssl
 
 	install -m 0644 -g 1999 -o root panel/class/m_ssl.php $(DESTDIR)/usr/share/alternc/panel/class/
 	install -m 0644 -g 1999 -o root panel/admin/*.php $(DESTDIR)/usr/share/alternc/panel/admin/
 	install -m 0644 -g 1999 -o root panel/admin/images/* $(DESTDIR)/usr/share/alternc/panel/admin/images/
-	install -m 0644 -g 1999 -o root panel/admin/styles/* $(DESTDIR)/usr/share/alternc/panel/admin/styles/
+# FIXME: how can we do that properly ??
+#	install -m 0644 -g 1999 -o root panel/admin/styles/* $(DESTDIR)/usr/share/alternc/panel/admin/styles/
 	install -m 0644 -g 1999 -o root templates/* $(DESTDIR)/etc/alternc/templates/apache2/
 	install -m 0644 -g 1999 -o root openssl.cnf $(DESTDIR)/etc/alternc/
 	install -m 0755 -g 1999 -o root hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/

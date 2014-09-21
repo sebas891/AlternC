@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -f /var/run/alternc/generate_certif_alias
+rm -f /var/run/alternc/ssl/generate_certif_alias
 
 # Launched by incron when /tmp/generate_certif_alias exists
 # regenerate the list of global aliases used by Comodo for certificate ownership validation
@@ -13,10 +13,10 @@ FILEDIR=/var/lib/alternc/ssl-cert-alias
 rm -f "$TMP"
 mkdir -p "$FILEDIR"
 
-mysql --defaults-file=/etc/alternc/.my.cnf --skip-column-names -B -e "SELECT name,value FROM certif_alias;" | while read name value
+mysql --defaults-file=/etc/alternc/my.cnf --skip-column-names -B -e "SELECT name,content FROM certif_alias;" | while read name content
 do
     echo "alias $name ${FILEDIR}${name}" >>$TMP
-    echo "$value" >"${FILEDIR}${name}"
+    echo "$content" >"${FILEDIR}${name}"
 done
 mv -f "$TMP" "$APACHECONF"
 

@@ -18,3 +18,13 @@ CREATE TABLE `certificates` (
   KEY `uid` (`uid`),
   KEY `ssl_action` (`ssl_action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `certif_alias` (
+  `name` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `uid` int(10) unsigned NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`name`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Global aliases defined for SSL certificates FILE validation processes';

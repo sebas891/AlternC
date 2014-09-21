@@ -6,8 +6,9 @@
 class Alternc_Api_Object_Ssl  {
     
   const ERR_INVALID_ARGUMENT = 11151901;
+  const ERR_ALTERNC_FUNCTION = 11151902;
 
-  function __constructor($service) {
+  function __construct($service) {
     global $ssl,$cuid;
     if (!($service instanceof Alternc_Api_Service)) {
       throw new \Exception("Bad argument: service is not an Alternc_Api_Service", self::ERR_INVALID_ARGUMENT);
@@ -24,7 +25,7 @@ class Alternc_Api_Object_Ssl  {
    * @return Alternc_Api_Response whose content is an array of hashes containing all corresponding certificates informations
    */
   function getList($options) {
-    if (isset($options["filter"]) && is_int($options["filter"])) {
+    if (isset($options["filter"]) && intval($options["filter"])) {
       $filter=intval($options["filter"]);
     } else {
       $filter=null;
@@ -57,10 +58,10 @@ class Alternc_Api_Object_Ssl  {
    * @return Alternc_Api_Response whose content is a hash with all informations for that certificate
    */
   function getCertificate($options) {
-    if (!isset($options["id"]) || !is_int($options["int"])) {
+    if (!isset($options["id"]) || !intval($options["id"])) {
       return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: ID") );
     }
-    $certinfo=$this->ssl->get_certificate($options["id"]);
+    $certinfo=$this->ssl->get_certificate(intval($options["id"]));
     if ($certinfo===false) {
       return $this->alterncLegacyErrorManager();
     }
@@ -75,13 +76,13 @@ class Alternc_Api_Object_Ssl  {
    * @return Alternc_Api_Response true.
    */
   function share($options) {
-    if (!isset($options["id"]) || !is_int($options["id"])) {
+    if (!isset($options["id"]) || !intval($options["id"])) {
       return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: ID") );
     }
-    if (!isset($options["action"]) || !is_bool($options["action"])) {
+    if (!isset($options["action"]) ) {
       return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: ACTION") );
     }
-    $isok=$this->ssl->share($options["id"],$options["action"]);
+    $isok=$this->ssl->share(intval($options["id"]), (intval($options["action"]))? true : false );
     if ($isok===false) {
       return $this->alterncLegacyErrorManager();
     }
@@ -109,7 +110,7 @@ class Alternc_Api_Object_Ssl  {
       $options["chain"]="";
     }
 
-    $certid=$this->ssl->share($options["key"],$options["crt"],$options["chain"]);
+    $certid=$this->ssl->import_cert($options["key"],$options["crt"],$options["chain"]);
     if ($certid===false) {
       return $this->alterncLegacyErrorManager();
     }
@@ -126,7 +127,7 @@ class Alternc_Api_Object_Ssl  {
    * @return Alternc_Api_Response the ID of the updated certificate in the table.
    */
   function finalize($options) {
-    if (!isset($options["id"]) || !is_int($options["id"])) {
+    if (!isset($options["id"]) || !intval($options["id"])) {
       return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: ID") );
     }
     if (!isset($options["crt"]) || !is_string($options["crt"])) {
@@ -140,7 +141,7 @@ class Alternc_Api_Object_Ssl  {
       $options["chain"]="";
     }
 
-    $certid=$this->ssl->finalize($options["id"],$options["crt"],$options["chain"]);
+    $certid=$this->ssl->finalize(intval($options["id"]),$options["crt"],$options["chain"]);
     if ($certid===false) {
       return $this->alterncLegacyErrorManager();
     }
@@ -157,11 +158,11 @@ class Alternc_Api_Object_Ssl  {
     if (!isset($options["name"]) || !is_string($options["name"])) {
       return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: NAME") );
     }
-    if (!isset($options["value"]) || !is_string($options["value"])) {
-      return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: VALUE") );
+    if (!isset($options["content"]) || !is_string($options["content"])) {
+      return new Alternc_Api_Response( array("code" => self::ERR_INVALID_ARGUMENT, "message" => "Missing or invalid argument: CONTENT") );
     }
 
-    $isok=$this->ssl->alias_add($options["name"],$options["value"]);
+    $isok=$this->ssl->alias_add($options["name"],$options["content"]);
     if ($isok===false) {
       return $this->alterncLegacyErrorManager();
     }
@@ -171,7 +172,7 @@ class Alternc_Api_Object_Ssl  {
 
   /** API Method from legacy class alias_del()
    * @param $options a hash with parameters transmitted to legacy call
-   *  del the alias 'name' with the content value 'value' in the global apache configuration
+   *  del the alias 'name' in the global apache configuration
    *  @return Alternc_Api_Response true 
    */
   function aliasDel($options) {

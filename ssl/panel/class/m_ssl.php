@@ -42,7 +42,7 @@ class m_ssl {
   const FILTER_EXPIRED = 4;
   const FILTER_SHARED = 8;
 
-  const SSL_INCRON_FILE = "/var/run/alternc/generate_certif_alias";
+  const SSL_INCRON_FILE = "/var/run/alternc/ssl/generate_certif_alias";
 
   /* ----------------------------------------------------------------- */
   /**
@@ -412,19 +412,19 @@ class m_ssl {
    * certif_alias table and add it to apache configuration
    * by launching a incron action. 
    * name is the name of the alias, starting by /
-   * value is the value of the filename stored at this location
+   * content is the content of the filename stored at this location
    * If an alias with the same name already exists, return false.
    * if the alias has been properly defined, return true.
    * @return boolean
    */
-  function alias_add($name,$value) {
+  function alias_add($name,$content) {
     global $err,$cuid,$db;
     $db->query("SELECT name FROM certif_alias WHERE name='".addslashes($name)."';");
     if ($db->next_record()) {
       $err->raise("ssl",_("Alias already exists"));
       return false;
     }
-    $db->query("INSERT INTO certif_alias SET name='".addslashes($name)."', value='".addslashes($value)."', uid=".intval($cuid).";");
+    $db->query("INSERT INTO certif_alias SET name='".addslashes($name)."', content='".addslashes($content)."', uid=".intval($cuid).";");
     touch(self::SSL_INCRON_FILE);
     return true;
   }
@@ -487,9 +487,12 @@ class m_ssl {
 	 substr($chain,-26,26)!="-----END CERTIFICATE-----\n")) {
       $this->error.=_("The chained certificate must begin by BEGIN CERTIFICATE and end by END CERTIFICATE lines. Please check you pasted it in PEM form.")."\n";
     }
-    if (substr($key,0,32)!="-----BEGIN RSA PRIVATE KEY-----\n" ||
-	substr($key,-30,30)!="-----END RSA PRIVATE KEY-----\n") {
-      $this->error.=_("The private key must begin by BEGIN RSA PRIVATE KEY and end by END RSA PRIVATE KEY lines. Please check you pasted it in PEM form.")."\n";
+    if ( (substr($key,0,32)!="-----BEGIN RSA PRIVATE KEY-----\n" ||
+	  substr($key,-30,30)!="-----END RSA PRIVATE KEY-----\n") && 
+	 (substr($key,0,28)!="-----BEGIN PRIVATE KEY-----\n" ||
+	  substr($key,-26,26)!="-----END PRIVATE KEY-----\n") )
+      {
+      $this->error.=_("The private key must begin by BEGIN (RSA )PRIVATE KEY and end by END (RSA )PRIVATE KEY lines. Please check you pasted it in PEM form.")."\n";
     }
     if ($this->error) {
       return false;
