@@ -3,18 +3,13 @@
 /**
  * SSL Api of AlternC, used by alternc-api package
  */
-class Alternc_Api_Object_Ssl  {
-    
-  const ERR_INVALID_ARGUMENT = 11151901;
-  const ERR_ALTERNC_FUNCTION = 11151902;
+class Alternc_Api_Object_Ssl extends Alternc_Api_Legacyobject {
 
+  protected $ssl;
+  
   function __construct($service) {
-    global $ssl,$cuid;
-    if (!($service instanceof Alternc_Api_Service)) {
-      throw new \Exception("Bad argument: service is not an Alternc_Api_Service", self::ERR_INVALID_ARGUMENT);
-    }
-    // We store the global $cuid to AlternC legacy classes
-    $cuid=$service->token->uid;
+    global $ssl;
+    parent::__construct($service);
     // We use the global $ssl from AlternC legacy classes
     $this->ssl=$ssl;
   }
@@ -187,16 +182,6 @@ class Alternc_Api_Object_Ssl  {
     return new Alternc_Api_Response( array("content" => $isok) );
   }
 
-
-
-
-  /** return a proper Alternc_Api_Response from an error class and error string 
-   * from AlternC legacy class
-   */
-  private function alterncLegacyErrorManager() {
-    global $err;
-    return new Alternc_Api_Response( array("code" => self::ERR_ALTERNC_FUNCTION, "message" => "[".$err->clsid."] ".$err->error) );
-  }
 
 
 } // class Alternc_Api_Object_Ssl
