@@ -126,12 +126,15 @@ class m_ssl {
             $sql = " uid='$cuid' ";
         }
         $sql.=" AND status IN (-1";
-        if ($filter & self::FILTER_PENDING)
+        if ($filter & self::FILTER_PENDING) {
             $sql.="," . self::STATUS_PENDING;
-        if ($filter & self::FILTER_OK)
+        }
+        if ($filter & self::FILTER_OK) {
             $sql.="," . self::STATUS_OK;
-        if ($filter & self::FILTER_EXPIRED)
+        }
+        if ($filter & self::FILTER_EXPIRED) {
             $sql.="," . self::STATUS_EXPIRED;
+        }
         $sql.=") ";
         $db->query("SELECT *, UNIX_TIMESTAMP(validstart) AS validstartts, UNIX_TIMESTAMP(validend) AS validendts FROM certificates WHERE $sql ORDER BY shared, fqdn;");
         if ($db->num_rows()) {
@@ -170,6 +173,7 @@ class m_ssl {
             $err->raise("ssl", _("Can't generate a private key (1)"));
             return false;
         }
+        $privKey = "";
         if (!openssl_pkey_export($pkey, $privKey)) {
             $err->raise("ssl", _("Can't generate a private key (2)"));
             return false;
@@ -178,6 +182,7 @@ class m_ssl {
         // override the (not taken from openssl.cnf) digest to use SHA-2 / SHA256 and not SHA-1 or MD5 :
         $config = array("digest_alg" => "sha256");
         $csr = openssl_csr_new($dn, $pkey, $config);
+        $csrout = "";
         openssl_csr_export($csr, $csrout);
         $db->query("INSERT INTO certificates SET uid='$cuid', status=" . self::STATUS_PENDING . ", shared=0, fqdn='" . addslashes($fqdn) . "', altnames='', validstart=NOW(), sslcsr='" . addslashes($csrout) . "', sslkey='" . addslashes($privKey) . "';");
         if (!($id = $db->lastid())) {
@@ -218,10 +223,11 @@ class m_ssl {
             $err->raise("ssl", _("Can't find this Certifcate"));
             return false;
         }
-        if ($action)
+        if ($action) {
             $action = 1;
-        else
+        } else {
             $action = 0;
+        }
         $db->query("UPDATE certificates SET shared=$action WHERE id='$id';");
         return true;
     }
@@ -249,8 +255,9 @@ class m_ssl {
         $advice = array();
         while ($db->next_record()) {
             $me = $db->f("sub");
-            if ($me)
+            if ($me) {
                 $me.=".";
+            }
             $me.=$db->f("domaine");
             if (!in_array($me, $r) && !in_array($me, $advice)) {
                 $advice[] = $me;
@@ -369,9 +376,8 @@ class m_ssl {
      * EXPERIMENTAL 'sid' function ;) 
      */
     function alternc_export_conf() {
-        global $db, $err;
+        global $db, $err, $cuid;
         $err->log("ssl", "export");
-        $f = $this->get_list();
         $str = "  <ssl>";
         $db->query("SELECT COUNT(*) AS cnt FROM certificates WHERE uid='$cuid' AND status!=" . self::STATUS_EXPIRED);
         while ($db->next_record()) {
@@ -392,6 +398,7 @@ class m_ssl {
      * @return array an array of FQDNs
      */
     function parseAltNames($str) {
+        $mat = array();
         if (preg_match_all("#DNS:([^,]*),#", $str, $mat, PREG_PATTERN_ORDER)) {
             return implode("\n", $mat[1]);
         } else {
@@ -450,7 +457,7 @@ class m_ssl {
      * or false if an error occurred (in that case $this->error is filled)
      */
     function check_cert($crt, $chain, $key = "", $certid = null) {
-        global $err, $cuid, $db;
+        global $db;
         // Check that the key crt and chain are really SSL certificates and keys
         $crt = trim(str_replace("\r\n", "\n", $crt)) . "\n";
         $key = trim(str_replace("\r\n", "\n", $key)) . "\n";
@@ -522,8 +529,6 @@ class m_ssl {
                 $rchains[] = $tmpr;
             }
         }
-        $validstart = 0;
-        $validend = 0;
         $rcrt = openssl_x509_read($crt);
         $crtdata = openssl_x509_parse($crt);
         if ($rcrt === false || $crtdata === false) {
@@ -564,4 +569,3 @@ class m_ssl {
 }
 
 /* Class m_ssl */
-
