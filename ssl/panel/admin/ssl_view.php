@@ -178,6 +178,10 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
                     <input class="inb cancel" type="submit" name="unshare" value="<?php __("Click here to stop sharing this certificate"); ?>" />
                 </form>
                 <?php
+            } else {
+                ?>
+                <p><?php __("You are not the owner of this certificate, only its owner can share/unshare this certificate."); ?></p>
+                <?php
             }
         } else {
             echo _("This certificate is currently <b>NOT shared</b>");
@@ -189,6 +193,10 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
                     <input type="hidden" name="action" id="action" value="1" />
                     <input class="inb ok" type="submit" name="unshare" value="<?php __("Click here to share this certificate"); ?>" />
                 </form>
+                <?php
+            } else {
+                ?>
+                <p><?php __("You are not the owner of this certificate, only its owner can share/unshare this certificate."); ?></p>
                 <?php
             }
         }
