@@ -29,9 +29,14 @@ CREATE TABLE IF NOT EXISTS `certif_alias` (
   KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Global aliases defined for SSL certificates FILE validation processes';
 
-INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES ('vhost-ssl','Locally hosted WITH SSL','DIRECTORY','%SUB% IN A @@PUBLIC_IP@@','vhost,url,txt,defmx,defmx2,mx,mx2','ALL',0,0,0,1,1);
-INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES ('url-ssl','URL redirection WITH SSL','URL','%SUB% IN A @@PUBLIC_IP@@','vhost,url,txt,defmx,defmx2','ALL',0,0,0,0,0);
-INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES ('panel-ssl','AlternC panel access WITH SSL','NONE','%SUB% IN A @@PUBLIC_IP@@','panel,ip,ipv6,cname,txt,mx,mx2,defmx,defmx2','ALL',0,0,1,0,0);
-INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES ('roundcube-ssl','Roundcube Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,roundcube,txt', 'ALL', '0', '0', '0');
-INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES ('squirrelmail-ssl','Squirrelmail Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,squirrelmail,txt', 'ALL', '0', '0', '0');
+INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES 
+ ('vhost-ssl','Locally hosted forcing HTTPS','DIRECTORY','%SUB% IN A @@PUBLIC_IP@@','vhost,url,txt,defmx,defmx2,mx,mx2','ALL',0,0,0);
+INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES 
+ ('vhost-mixssl','Locally hosted HTTP and HTTPS','DIRECTORY','%SUB% IN A @@PUBLIC_IP@@','vhost,url,txt,defmx,defmx2,mx,mx2','ALL',0,0,0);
+INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES 
+ ('panel-ssl','AlternC panel access WITH SSL','NONE','%SUB% IN A @@PUBLIC_IP@@','ip,ipv6,cname,txt,mx,mx2,defmx,defmx2','ALL',0,0,1);
+INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES 
+ ('roundcube-ssl','Roundcube Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL',0,0,1;
+INSERT IGNORE INTO `domaines_type` (name ,description ,target ,entry ,compatibility ,enable ,only_dns ,need_dns ,advanced ) VALUES 
+ ('squirrelmail-ssl','Squirrelmail Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt','ALL',0,0,1);
 
