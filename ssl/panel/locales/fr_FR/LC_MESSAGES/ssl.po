@@ -139,7 +139,7 @@ msgstr "En créer un"
 msgid ""
 "This hosting has no valid certificate<br>a self-signed one has been created"
 msgstr ""
-"Cet hébergement n'a pas de certificat valid<br>Un certificat autosigné a été "
+"Cet hébergement n'a pas de certificat valide<br>Un certificat autosigné a été "
 "créé"
 
 #: ../admin/ssl_list.php:140
