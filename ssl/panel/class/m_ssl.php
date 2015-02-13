@@ -46,7 +46,7 @@ class m_ssl {
 
     var $myDomainesTypes = array("vhost-ssl", "url-ssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl");
 
-    const KEY_REPOSITORY = "/var/lib/alternc/ssl/private/";
+    const KEY_REPOSITORY = "/var/lib/alternc/ssl/private";
 
 // ----------------------------------------------------------------- 
     /**
@@ -387,7 +387,7 @@ class m_ssl {
         if (!in_array($type, $this->myDomainesTypes)) {
             return; // nothing to do : the type is not our to start with ;) 
         }
-        if ($action == "create") {
+        if ($action == "postinst") {
             $err->log("ssl", "update_domain:CREATE($action,$type,$fqdn)");
             $offset = 0;
             $found = false;

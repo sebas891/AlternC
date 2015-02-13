@@ -8,13 +8,17 @@ case "$1" in
     alternc.install || true     # don't fail removal if alternc.install bails out
 
     # TODO : we don't purge *-ssl vhosts or *-ssl templates, they may break the hosting ...
-    ;;
+    if [ -e "$CONFIGFILE" -a -x "/usr/bin/mysql" ]; then
+        mysql --defaults-file=${CONFIGFILE} -f -e "DELETE FROM domaines_type WHERE name IN ('vhost-ssl,'vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
+        mysql --defaults-file=${CONFIGFILE} -f -e "UPDATE sub_domaines SET web_action='DELETE' WHERE type IN ('vhost-ssl,'vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
+    fi
+;;
   purge)
-    # but yes, at purge time we should
-    #if [ -e "$CONFIGFILE" -a -x "/usr/bin/mysql" ]; then
-    #    mysql --defaults-file=${CONFIGFILE} -f -e "DROP TABLE IF EXISTS certificate"
-    #  and other purges...
-    #fi
+    # Purge the certificate and alias table:
+    if [ -e "$CONFIGFILE" -a -x "/usr/bin/mysql" ]; then
+       mysql --defaults-file=${CONFIGFILE} -f -e "DROP TABLE IF EXISTS certificate;"
+       mysql --defaults-file=${CONFIGFILE} -f -e "DROP TABLE IF EXISTS certif_alias;"
+    fi
     ;;
 esac
 

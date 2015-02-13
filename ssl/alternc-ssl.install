@@ -1,9 +1,0 @@
-#!/usr/bin/php
-<?php
-/*
- at alternc.install time, we deploy our templates
- and synchronize the required domain templates with the current install
- (do they have php52, roundcube, squirrelmail, etc.?)
-*/
-
-
