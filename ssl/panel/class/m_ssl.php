@@ -231,7 +231,7 @@ class m_ssl {
         $id = intval($id);
         $db->query("SELECT *, UNIX_TIMESTAMP(validstart) AS validstartts, UNIX_TIMESTAMP(validend) AS validendts FROM certificates WHERE (uid='$cuid' OR (shared=1 AND status=" . self::STATUS_OK . ") ) AND id='$id';");
         if (!$db->next_record()) {
-            $err->raise("ssl", _("Can't find this Certifcate"));
+            $err->raise("ssl", _("Can't find this Certificate"));
             return false;
         }
         return $db->Record;
@@ -247,7 +247,7 @@ class m_ssl {
         $id = intval($id);
         $db->query("SELECT * FROM certificates WHERE uid='$cuid' AND id='$id';");
         if (!$db->next_record()) {
-            $err->raise("ssl", _("Can't find this Certifcate"));
+            $err->raise("ssl", _("Can't find this Certificate"));
             return false;
         }
         $fqdn = $db->Record["fqdn"];
@@ -270,7 +270,7 @@ class m_ssl {
         $id = intval($id);
         $db->query("SELECT * FROM certificates WHERE uid='$cuid' AND status=" . self::STATUS_OK . " AND id='$id';");
         if (!$db->next_record()) {
-            $err->raise("ssl", _("Can't find this Certifcate"));
+            $err->raise("ssl", _("Can't find this Certificate"));
             return false;
         }
         if ($action) {
