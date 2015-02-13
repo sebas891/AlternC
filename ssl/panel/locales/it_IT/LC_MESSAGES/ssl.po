@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: AlternC 2.0\n"
 "Report-Msgid-Bugs-To: i18n@alternc.org\n"
-"POT-Creation-Date: 2015-02-13 17:20+0100\n"
+"POT-Creation-Date: 2015-02-13 18:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -411,7 +411,7 @@ msgid "Can't generate a CSR"
 msgstr ""
 
 #: ../class/m_ssl.php:234 ../class/m_ssl.php:250 ../class/m_ssl.php:273
-msgid "Can't find this Certifcate"
+msgid "Can't find this Certificate"
 msgstr ""
 
 #: ../class/m_ssl.php:353
@@ -482,4 +482,32 @@ msgstr ""
 
 #: ../class/m_ssl.php:757
 msgid "Can't export your private key as a string, please check its syntax."
+msgstr ""
+
+#: ../class/m_ssl.php:800
+msgid "Locally hosted forcing HTTPS"
+msgstr ""
+
+#: ../class/m_ssl.php:801
+msgid "Locally hosted HTTP and HTTPS"
+msgstr ""
+
+#: ../class/m_ssl.php:802
+msgid "HTTPS AlternC panel access"
+msgstr ""
+
+#: ../class/m_ssl.php:803
+msgid "HTTPS Roundcube Webmail"
+msgstr ""
+
+#: ../class/m_ssl.php:804
+msgid "HTTPS Squirrelmail Webmail"
+msgstr ""
+
+#: ../class/m_ssl.php:805
+msgid "php52 forcing HTTPS"
+msgstr ""
+
+#: ../class/m_ssl.php:806
+msgid "php52 HTTP and HTTPS"
 msgstr ""

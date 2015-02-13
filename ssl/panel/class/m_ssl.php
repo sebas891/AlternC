@@ -795,6 +795,17 @@ class m_ssl {
         );
     }
 
+
+    function dummy() {
+      _("Locally hosted forcing HTTPS");
+      _("Locally hosted HTTP and HTTPS");
+      _("HTTPS AlternC panel access");
+      _("HTTPS Roundcube Webmail");
+      _("HTTPS Squirrelmail Webmail");
+      _("php52 forcing HTTPS");
+      _("php52 HTTP and HTTPS");
+    }
+
 }
 
 /* Class m_ssl */

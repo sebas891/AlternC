@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: $Id: admin.po,v 1.2 2003/06/09 14:36:08 root Exp $\n"
 "Report-Msgid-Bugs-To: i18n@alternc.org\n"
-"POT-Creation-Date: 2015-02-13 17:20+0100\n"
+"POT-Creation-Date: 2015-02-13 18:04+0100\n"
 "PO-Revision-Date: 2007-10-25 23:50-0400\n"
 "Last-Translator: Benjamin Sonntag <benjamin@alternc.org>\n"
 "Language-Team: English <i18n@alternc.org>\n"
@@ -425,8 +425,9 @@ msgid "Can't generate a CSR"
 msgstr ""
 
 #: ../class/m_ssl.php:234 ../class/m_ssl.php:250 ../class/m_ssl.php:273
-msgid "Can't find this Certifcate"
-msgstr ""
+#, fuzzy
+msgid "Can't find this Certificate"
+msgstr "clica aqui para editar esta conta ftp"
 
 #: ../class/m_ssl.php:353
 msgid "Can't save the Key/Crt/Chain now. Please try later."
@@ -500,6 +501,39 @@ msgstr ""
 
 #: ../class/m_ssl.php:757
 msgid "Can't export your private key as a string, please check its syntax."
+msgstr ""
+
+#: ../class/m_ssl.php:800
+#, fuzzy
+msgid "Locally hosted forcing HTTPS"
+msgstr "Controlado localemente"
+
+#: ../class/m_ssl.php:801
+#, fuzzy
+msgid "Locally hosted HTTP and HTTPS"
+msgstr "Controlado localemente"
+
+#: ../class/m_ssl.php:802
+#, fuzzy
+msgid "HTTPS AlternC panel access"
+msgstr "Lista de contas FTP"
+
+#: ../class/m_ssl.php:803
+#, fuzzy
+msgid "HTTPS Roundcube Webmail"
+msgstr "Acesso Webmail"
+
+#: ../class/m_ssl.php:804
+#, fuzzy
+msgid "HTTPS Squirrelmail Webmail"
+msgstr "Acesso Webmail"
+
+#: ../class/m_ssl.php:805
+msgid "php52 forcing HTTPS"
+msgstr ""
+
+#: ../class/m_ssl.php:806
+msgid "php52 HTTP and HTTPS"
 msgstr ""
 
 #, fuzzy
@@ -2249,27 +2283,11 @@ msgstr ""
 #~ msgstr "Esta conta é uma conta super-administrador"
 
 #, fuzzy
-#~ msgid "Locally hosted"
-#~ msgstr "Controlado localemente"
-
-#, fuzzy
 #~ msgid "URL redirection"
 #~ msgstr "Redireção URL"
 
 #~ msgid "Webmail access"
 #~ msgstr "Acesso Webmail"
-
-#, fuzzy
-#~ msgid "Squirrelmail Webmail access"
-#~ msgstr "Acesso Webmail"
-
-#, fuzzy
-#~ msgid "Roundcube Webmail access"
-#~ msgstr "Acesso Webmail"
-
-#, fuzzy
-#~ msgid "AlternC panel access"
-#~ msgstr "Lista de contas FTP"
 
 #, fuzzy
 #~ msgid "err_"
