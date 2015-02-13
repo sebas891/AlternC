@@ -35,6 +35,7 @@ install:
 	install -m 0644 -g 1999 -o root panel/locales/de_DE/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/de_DE/LC_MESSAGES/ssl.po
 	install -m 0644 -g 1999 -o root panel/locales/it_IT/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/it_IT/LC_MESSAGES/ssl.po
 	install -m 0644 -g 1999 -o root panel/locales/nl_NL/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/nl_NL/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/es_ES/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/es_ES/LC_MESSAGES/ssl.po
 # FIXME: how can we do that properly ??
 #	install -m 0644 -g 1999 -o root panel/admin/styles/* $(DESTDIR)/usr/share/alternc/panel/admin/styles/
 
