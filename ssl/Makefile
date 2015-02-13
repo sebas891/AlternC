@@ -28,7 +28,13 @@ install:
 	install -m 0644 -g 1999 -o root panel/class/m_ssl.php $(DESTDIR)/usr/share/alternc/panel/class/
 	install -m 0644 -g 1999 -o root panel/admin/*.php $(DESTDIR)/usr/share/alternc/panel/admin/
 	install -m 0644 -g 1999 -o root panel/admin/images/* $(DESTDIR)/usr/share/alternc/panel/admin/images/
-
+# locales
+	install -m 0644 -g 1999 -o root panel/locales/pt_BR/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/pt_BR/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/fr_FR/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/fr_FR/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/en_US/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/en_US/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/de_DE/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/de_DE/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/it_IT/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/it_IT/LC_MESSAGES/ssl.po
+	install -m 0644 -g 1999 -o root panel/locales/nl_NL/LC_MESSAGES/ssl.po $(DESTDIR)/usr/share/alternc/panel/locales/nl_NL/LC_MESSAGES/ssl.po
 # FIXME: how can we do that properly ??
 #	install -m 0644 -g 1999 -o root panel/admin/styles/* $(DESTDIR)/usr/share/alternc/panel/admin/styles/
 
@@ -42,6 +48,5 @@ install:
 	ln -s hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_squirrelmail-ssl.sh
 	ln -s hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_php52-ssl.sh
 	ln -s hosting_vhost-ssl.sh $(DESTDIR)/etc/alternc/functions_hosting/hosting_php52-mixssl.sh
-	
 # api
 	install -m 0644 -g root -o root api/Ssl.php $(DESTDIR)/usr/share/php/Alternc/Api/Object/
