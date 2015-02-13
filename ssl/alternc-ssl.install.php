@@ -5,11 +5,17 @@
   synchronize the required domain templates with the current install
   (do they have php52, roundcube, squirrelmail, etc.?)
  */
+if ($argv[1] == "templates") {
+    // install ssl.conf
+    echo "[alternc-ssl] Installing ssl.conf template\n";
+    copy("/etc/alternc/templates/apache2/mods-available/ssl.conf","/etc/apache2/mods-available/ssl.conf");
+}
 
 if ($argv[1] == "before-reload") {
     // Bootstrap
     require_once("/usr/share/alternc/panel/class/config_nochk.php");
 
+    echo "[alternc-ssl] Installing domaines-types\n";
     $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
             ('vhost-ssl', 'Locally hosted forcing HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 0);");
 
@@ -19,7 +25,7 @@ if ($argv[1] == "before-reload") {
     $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
             ('panel-ssl', 'AlternC panel access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'ip,ipv6,cname,txt,mx,mx2,defmx,defmx2', 'ALL', 0, 0, 1);");
 
-    $db - query("SELECT * FROM domaines_type WHERE name='roundcube';");
+    $db->query("SELECT * FROM domaines_type WHERE name='roundcube';");
     if ($db->next_record()) {
         $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
     ('roundcube-ssl', 'Roundcube Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1;");
@@ -28,7 +34,7 @@ if ($argv[1] == "before-reload") {
         $db->query("UPDATE sub_domaines SET web_action='DELETE' WHERE type='roundcube-ssl';");
     }
 
-    $db - query("SELECT * FROM domaines_type WHERE name='squirrelmail';");
+    $db->query("SELECT * FROM domaines_type WHERE name='squirrelmail';");
     if ($db->next_record()) {
         $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
             ('squirrelmail-ssl', 'Squirrelmail Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1);");
@@ -37,7 +43,7 @@ if ($argv[1] == "before-reload") {
         $db->query("UPDATE sub_domaines SET web_action='DELETE' WHERE type='squirrelmail-ssl';");
     }
 
-    $db - query("SELECT * FROM domaines_type WHERE name='php52';");
+    $db->query("SELECT * FROM domaines_type WHERE name='php52';");
     if ($db->next_record()) {
         $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
             ('php52-ssl', 'php52 forcing HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 0);");
@@ -69,6 +75,4 @@ if ($argv[1] == "before-reload") {
             fclose($f);
         }
     }
-    
-    
 } // before-reload

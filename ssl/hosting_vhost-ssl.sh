@@ -30,7 +30,7 @@ if ( ($argv[1]=="create" || $argv[1]=="postinst" || $argv[1]=="delete") ) {
         print_r($argv);
         exit();
     }
-    $ssl->update_domain($argv[1], $argv[2], $argv[3], $argv[4]);
+    $ssl->updateDomain($argv[1], $argv[2], $argv[3], $argv[4]);
     exit();
 }
 if ( ($argv[1]=="enable" || $argv[1]=="disable") ) {
@@ -39,7 +39,7 @@ if ( ($argv[1]=="enable" || $argv[1]=="disable") ) {
         print_r($argv);
         exit();
     }
-    $ssl->update_domain($argv[1], $argv[2], $argv[3] );
+    $ssl->updateDomain($argv[1], $argv[2], $argv[3] );
     exit();
 }
 

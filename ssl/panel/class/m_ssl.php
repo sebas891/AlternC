@@ -36,19 +36,19 @@ class m_ssl {
 
     public $error = "";
 
-// Includes one or more of those flags to see only those certificates 
-// when listing them: 
+    // Includes one or more of those flags to see only those certificates 
+    // when listing them: 
     const FILTER_PENDING = 1;
     const FILTER_OK = 2;
     const FILTER_EXPIRED = 4;
     const FILTER_SHARED = 8;
     const SSL_INCRON_FILE = "/var/run/alternc/ssl/generate_certif_alias";
 
-    var $myDomainesTypes = array("vhost-ssl", "url-ssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl");
+    var $myDomainesTypes = array("vhost-ssl", "vhost-mixssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl","php52-ssl","php52-mixssl");
 
     const KEY_REPOSITORY = "/var/lib/alternc/ssl/private";
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /**
      * Constructor
      */
@@ -56,7 +56,7 @@ class m_ssl {
         
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /**
      * Hook to add the "ssl certificate" menu in the Panel
      */
@@ -82,7 +82,7 @@ class m_ssl {
                 );
             }
 
-// or admin shared >0 !
+            // or admin shared >0 !
             $db->query("SELECT COUNT(*) AS cnt FROM certificates WHERE uid='$cuid' OR shared=1");
             $used = $q['u'];
             if ($db->next_record()) {
@@ -98,7 +98,7 @@ class m_ssl {
         return $obj;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Return all the SSL certificates for an account (or the searched one)
      * @param $filter an integer telling which certificate we want to see (see FILTER_* constants above)
      * the default is showing all certificate, but only Pending and OK certificates, not expired or shared one 
@@ -110,7 +110,7 @@ class m_ssl {
         global $db, $err, $cuid;
         $err->log("ssl", "get_list");
         $r = array();
-// If we have no filter, we filter by default on pending and ok certificates if there is more than 10 of them for the same user.
+        // If we have no filter, we filter by default on pending and ok certificates if there is more than 10 of them for the same user.
         if (is_null($filter)) {
             $db->query("SELECT count(*) AS cnt FROM certificates WHERE uid='$cuid' OR shared=1;");
             $db->next_record();
@@ -120,9 +120,9 @@ class m_ssl {
                 $filter = (self::FILTER_PENDING | self::FILTER_OK | self::FILTER_EXPIRED | self::FILTER_SHARED);
             }
         }
-// filter the filter values :) 
+        // filter the filter values :) 
         $filter = ($filter & (self::FILTER_PENDING | self::FILTER_OK | self::FILTER_EXPIRED | self::FILTER_SHARED));
-// Here filter can't be null (and will be returned to the caller !)
+        // Here filter can't be null (and will be returned to the caller !)
         $sql = "";
         if ($filter & self::FILTER_SHARED) {
             $sql = " (uid='$cuid' OR shared=1) ";
@@ -152,7 +152,7 @@ class m_ssl {
         }
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Generate a new CSR, a new Private RSA Key, for FQDN.
      * @param $fqdn string the FQDN of the domain name for which we want a CSR.
      * a wildcard certificate must start by *.
@@ -183,7 +183,7 @@ class m_ssl {
             return false;
         }
         $dn = array("commonName" => $fqdn);
-// override the (not taken from openssl.cnf) digest to use SHA-2 / SHA256 and not SHA-1 or MD5 :
+        // override the (not taken from openssl.cnf) digest to use SHA-2 / SHA256 and not SHA-1 or MD5 :
         $config = array("digest_alg" => "sha256");
         $csr = openssl_csr_new($dn, $pkey, $config);
         $csrout = "";
@@ -196,7 +196,7 @@ class m_ssl {
         return $id;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Return all informations of a given certificate for the current user.
      * @return array all the informations of the current certificate as a hash.
      */
@@ -212,7 +212,7 @@ class m_ssl {
         return $db->Record;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Share (or unshare) an ssl certificate
      * @param $id integer the id of the certificate in the table.
      * @param $action integer share (1) or unshare (0) this certificate
@@ -222,13 +222,14 @@ class m_ssl {
         global $db, $err, $cuid;
         $err->log("ssl", "share");
         $id = intval($id);
-        $db->query("SELECT id FROM certificates WHERE uid='$cuid' AND status=" . self::STATUS_OK . " AND id='$id';");
+        $db->query("SELECT * FROM certificates WHERE uid='$cuid' AND status=" . self::STATUS_OK . " AND id='$id';");
         if (!$db->next_record()) {
             $err->raise("ssl", _("Can't find this Certifcate"));
             return false;
         }
         if ($action) {
             $action = 1;
+            $this->updateTrigger($db->Record["fqdn"],$db->Record["altnames"]);
         } else {
             $action = 0;
         }
@@ -236,7 +237,7 @@ class m_ssl {
         return true;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Return all the subdomains that can be ssl-enabled for the current account.
      * @return array of strings : all the subdomains. 
      * Excludes the one for which a cert is already available
@@ -245,7 +246,7 @@ class m_ssl {
         global $db, $err, $cuid;
         $err->log("ssl", "get_new_advice");
         $r = array();
-// my certificates, either OK or PENDING (not expired) or the SHARED one (only OK then)
+        // my certificates, either OK or PENDING (not expired) or the SHARED one (only OK then)
         $db->query("SELECT fqdn FROM certificates WHERE
       (uid='$cuid' AND status IN (" . self::STATUS_PENDING . "," . self::STATUS_OK . ") ) 
    OR (shared=1 AND status=" . self::STATUS_OK . ") 
@@ -254,7 +255,7 @@ class m_ssl {
         while ($db->next_record()) {
             $r[] = $db->f("fqdn");
         }
-// Now we get all our subdomains for certain domaines_types
+        // Now we get all our subdomains for certain domaines_types
         $db->query("SELECT sub,domaine FROM sub_domaines WHERE compte='$cuid' AND type IN ('vhost', 'url', 'roundcube', 'squirrelmail', 'panel', 'php52');");
         $advice = array();
         while ($db->next_record()) {
@@ -274,7 +275,7 @@ class m_ssl {
         return($advice);
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Import an existing ssl Key, Certificate and (maybe) a Chained Cert
      * @param $key string the X.509 PEM-encoded RSA key
      * @param $crt string the X.509  PEM-encoded certificate, which *must* 
@@ -299,17 +300,18 @@ class m_ssl {
         $fqdn = $crtdata["subject"]["CN"];
         $altnames = $this->parseAltNames($crtdata["extensions"]["subjectAltName"]);
 
-// Everything is PERFECT and has been thoroughly checked, let's insert those in the DB !
+        // Everything is PERFECT and has been thoroughly checked, let's insert those in the DB !
         $sql = "INSERT INTO certificates SET uid='$cuid', status=" . self::STATUS_OK . ", shared=0, fqdn='" . addslashes($fqdn) . "', altnames='" . addslashes($altnames) . "', validstart=FROM_UNIXTIME(" . intval($validstart) . "), validend=FROM_UNIXTIME(" . intval($validend) . "), sslkey='" . addslashes($key) . "', sslcrt='" . addslashes($crt) . "', sslchain='" . addslashes($chain) . "';";
         $db->query($sql);
         if (!($id = $db->lastid())) {
             $err->raise("ssl", _("Can't save the Key/Crt/Chain now. Please try later."));
             return false;
         }
+        $this->updateTrigger($fqdn,$altnames);
         return $id;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Import an ssl certificate into an existing certificate entry in the DB.
      * (finalize an enrollment process)
      * @param $certid integer the ID in the database of the SSL Certificate
@@ -336,16 +338,17 @@ class m_ssl {
         $fqdn = $crtdata["subject"]["CN"];
         $altnames = $this->parseAltNames($crtdata["extensions"]["subjectAltName"]);
 
-// Everything is PERFECT and has been thoroughly checked, let's insert those in the DB !
+        // Everything is PERFECT and has been thoroughly checked, let's insert those in the DB !
         $sql = "UPDATE certificates SET status=" . self::STATUS_OK . ", shared=0, fqdn='" . addslashes($fqdn) . "', altnames='" . addslashes($altnames) . "', validstart=FROM_UNIXTIME(" . intval($validstart) . "), validend=FROM_UNIXTIME(" . intval($validend) . "), sslcrt='" . addslashes($crt) . "', sslchain='" . addslashes($chain) . "' WHERE id='$certid' ;";
         if (!$db->query($sql)) {
             $err->raise("ssl", _("Can't save the Crt/Chain now. Please try later."));
             return false;
         }
+        $this->updateTrigger($fqdn,$altnames);
         return $certid;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Function called by a hook when an AlternC member is deleted.
      * @access private
      * TODO: delete unused ssl certificates ?? > do this in the crontab.
@@ -357,7 +360,7 @@ class m_ssl {
         return true;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Hook which returns the used quota for the $name service for the current user.
      * @param $name string name of the quota 
      * @return integer the number of service used or false if an error occured
@@ -374,14 +377,32 @@ class m_ssl {
         return $q;
     }
 
-//  ----------------------------------------------------------------- 
+    //  ----------------------------------------------------------------- 
+    /** Launched by functions in this class
+     * when a certificate is validated, expired or shared.
+     * so that existing vhost using expired or self-signed certificates
+     * may have the chance to use a proper one automagically
+     * @param string $fqdn the FQDN of the certificate 
+     * @param string $altnames any alternative names this certificate may have.
+     */
+    public function updateTrigger($fqdn, $altnames = "") {
+        global $db;
+        $fqdns = array($fqdn);
+        $an = explode("\n", $altnames);
+        foreach ($an as $a)
+            if (trim($a))
+                $fqdns[] = trim($a);
+        $db->query("UPDATE sub_domaines SET web_action='UPDATE' WHERE if(LENGTH(sub)>0,CONCAT(sub,'.',domaine),domaine) IN ('" . implode("','", $fqdns) . "');");
+    }
+
+    //  ----------------------------------------------------------------- 
     /** Launched by hosting_functions.sh launched by update_domaines.sh
      * Action may be create/postinst/delete/enable/disable
      * Change the template for this domain name to have the proper CERTIFICATE
      * An algorithm determine the best possible certificate, which may be a BAD one 
      * (like a generic admin-shared or self-signed for localhost as a last chance)
      */
-    public function update_domain($action, $type, $fqdn, $mail = 0, $value = "") {
+    public function updateDomain($action, $type, $fqdn, $mail = 0, $value = "") {
         global $db, $err;
         $err->log("ssl", "update_domain($action,$type,$fqdn)");
         if (!in_array($type, $this->myDomainesTypes)) {
@@ -408,8 +429,6 @@ class m_ssl {
             // found and $db point to it:
             $subdom = $db->Record;
             $TARGET_FILE = "/var/lib/alternc/apache-vhost/" . substr($subdom["compte"], -1) . "/" . $subdom["compte"] . "/" . $fqdn . ".conf";
-            // DEBUG 
-            echo "TARGET_FILE:".$TARGET_FILE."\n";
             $cert = $this->searchBestCert($subdom["compte"], $fqdn);
             // DEBUG             echo "Return from searchBestCert(" . $subdom["compte"] . "," . $fqdn . ") is ";            print_r($cert);
             // Save crt/key/chain into KEY_REPOSITORY
@@ -433,7 +452,7 @@ class m_ssl {
         } // action==create
     }
 
-//  --------------op--------------------------------------------------- 
+    //  ---------------------------------------------------------------- 
     /** Search for the best certificate for a user and a fqdn 
      * Return a hash with sslcrt, sslkey and maybe sslchain.
      * return ANYWAY : if necessary, return a newly created (and stored in KEY_REPOSITORY localhost self-signed certificate...
@@ -449,7 +468,7 @@ class m_ssl {
                 . "AND (fqdn='" . $fqdn . "' OR fqdn='" . $wildcard . "' OR altnames LIKE '%" . $fqdn . "%') "
                 . "ORDER BY (validstart<=NOW() AND validend>=NOW()) DESC, validstart DESC ");
         while ($db->next_record()) {
-            if ($db->fqdn == $fqdn) {
+            if ($db->Record["fqdn"] == $fqdn) {
                 return $db->Record;
             }
             $altnames = explode("\n", $db->Record["altnames"]);
@@ -465,7 +484,7 @@ class m_ssl {
         return $crt;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Export every information for an AlternC's account
      * @access private
      * EXPERIMENTAL 'sid' function ;) 
@@ -486,7 +505,7 @@ class m_ssl {
         return $str;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Returns the list of alternate names of an X.509 SSL Certificate 
      * from the attribute list.
      * @param $str string the $crtdata["extensions"]["subjectAltName"] from openssl
@@ -501,7 +520,7 @@ class m_ssl {
         }
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Add (immediately) a global alias to the HTTP 
      * certif_alias table and add it to apache configuration
      * by launching a incron action. 
@@ -523,7 +542,7 @@ class m_ssl {
         return true;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Removes (immediately) a global alias to the HTTP 
      * certif_alias table and add it to apache configuration
      * by launching a incron action. 
@@ -542,7 +561,7 @@ class m_ssl {
         return true;
     }
 
-// ----------------------------------------------------------------- 
+    // ----------------------------------------------------------------- 
     /** Check that a crt is a proper certificate
      * @param $crt string an SSL Certificate
      * @param $chain string is a list of certificates
@@ -553,14 +572,14 @@ class m_ssl {
      */
     function check_cert($crt, $chain, $key = "", $certid = null) {
         global $db;
-// Check that the key crt and chain are really SSL certificates and keys
+        // Check that the key crt and chain are really SSL certificates and keys
         $crt = trim(str_replace("\r\n", "\n", $crt)) . "\n";
         $key = trim(str_replace("\r\n", "\n", $key)) . "\n";
         $chain = trim(str_replace("\r\n", "\n", $chain)) . "\n";
 
         $this->error = "";
         if (trim($key) == "" && !is_null($certid)) {
-// find it in the DB : 
+            // find it in the DB : 
             $db->query("SELECT sslkey FROM certificates WHERE id=" . intval($certid) . ";");
             if (!$db->next_record()) {
                 $this->error.=_("Can't find the private key in the certificate table, please check your form.");
@@ -589,7 +608,7 @@ class m_ssl {
             return false;
         }
 
-// We split the chained certificates in individuals certificates : 
+        // We split the chained certificates in individuals certificates : 
         $chains = array();
         $status = 0;
         $new = "";
@@ -611,8 +630,8 @@ class m_ssl {
                 $new.=$line . "\n";
             }
         }
-// here chains contains all the ssl certificates in the chained certs.
-// Now we check those using Openssl functions (real check :) ) 
+        // here chains contains all the ssl certificates in the chained certs.
+        // Now we check those using Openssl functions (real check :) ) 
         $rchains = array();
         $i = 0;
         foreach ($chains as $tmpcert) {
@@ -635,13 +654,13 @@ class m_ssl {
             $this->error.=_("The private key is invalid.") . "\n";
         }
         if (!$this->error) {
-// check that the private key and the certificates are matching :
+            // check that the private key and the certificates are matching :
             if (!openssl_x509_check_private_key($rcrt, $rkey)) {
                 $this->error.=_("The private key is not the one signed inside the certificate.") . "\n";
             }
         }
         if (!$this->error) {
-// Everything is fine, let's recreate crt, chain, key from our internal OpenSSL structures:
+            // Everything is fine, let's recreate crt, chain, key from our internal OpenSSL structures:
             if (!openssl_x509_export($rcrt, $crt)) {
                 $this->error.=_("Can't export your certificate as a string, please check its syntax.") . "\n";
             }
