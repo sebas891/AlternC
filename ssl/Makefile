@@ -19,6 +19,7 @@
 install:
 	install -m 0644 -g root -o root ssl.sql $(DESTDIR)/usr/share/alternc/install/
 	install -m 0755 -g root -o root alternc-ssl.install.php $(DESTDIR)/usr/lib/alternc/install.d/alternc-ssl
+	install -m 0644 -g root -o root README.txt $(DESTDIR)/var/lib/alternc/ssl/private/
 
 # incron
 	install -m 0755 -g root -o root ssl_alias_manager.sh $(DESTDIR)/usr/lib/alternc/

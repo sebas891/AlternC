@@ -19,7 +19,6 @@ CREATE TABLE `certificates` (
   KEY `ssl_action` (`ssl_action`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
 CREATE TABLE IF NOT EXISTS `certif_alias` (
   `name` varchar(255) NOT NULL,
   `content` text NOT NULL,
@@ -28,3 +27,13 @@ CREATE TABLE IF NOT EXISTS `certif_alias` (
   PRIMARY KEY (`name`),
   KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Global aliases defined for SSL certificates FILE validation processes';
+
+CREATE TABLE IF NOT EXISTS `certif_hosts` (
+  `certif` int(10) unsigned NOT NULL,
+  `sub` int(10) unsigned NOT NULL,
+  `uid` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`certif`,`sub`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='VHosts of a user using defined or self-signed certificates';
+
+INSERT IGNORE INTO defquotas VALUES ('ssl', 0, 'default');

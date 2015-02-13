@@ -81,6 +81,10 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
         <p>
             <input type="submit" class="inb ok" name="submit" value="<?php __("Save"); ?>"/> &nbsp; 
             <input type="button" class="inb cancel" name="cancel" value="<?php __("Cancel"); ?>" onclick="document.location = 'ssl_list.php'"/>
+        </p><p>
+            <input type="submit" class="inb delete" name="delete" value="<?php __("Delete"); ?>" onclick="return confirm('<?php 
+            echo addslashes(_("Please confirm that you want to delete this certificate request AND ITS PRIVATE KEY!")); 
+            ?>');"/>
 
         </p>
     </form>
@@ -103,7 +107,9 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
         <?php
     }
     ?>
-    <p>
+ <form method="post" action="ssl_finalize.php" name="main" id="main">
+        <input type="hidden" name="id" id="id" value="<?php echo $cert["id"]; ?>"/>
+        <p>
         <span class="inb ok"><a href="ssl_list.php"><?php __("Back to my SSL Certificates"); ?></a></span> 
     </p>
     <table border="1" cellspacing="0" cellpadding="4" class="tedit">
@@ -201,8 +207,20 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
             }
         }
     }
+     if ($cert["uid"] == $cuid) {
     ?>
+                <p>
+            <input type="submit" class="inb delete" name="delete" value="<?php __("Delete"); ?>" onclick="return confirm('<?php 
+            echo addslashes(_("Please confirm that you want to delete this certificate AND ITS PRIVATE KEY!")); 
+            ?>');"/>
+
+        </p>
     <?php
-}
+     }
+} // pending or OK ?
+
 ?>
+
+        
+        
 <?php include_once("foot.php"); ?>

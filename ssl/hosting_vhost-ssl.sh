@@ -20,6 +20,11 @@
 // Bootstrap
 require_once("/usr/share/alternc/panel/class/config_nochk.php");
 
+if (!isset($ssl)) {
+    echo "OUPS: hosting_vhost-ssl.sh launched, but ssl module not installed, exiting\n";    
+    exit();
+}
+
 if (!isset($argv[1])) {
     echo "FATAL: must be launched from functions_hosting.sh !\n";
     exit();

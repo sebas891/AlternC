@@ -50,9 +50,15 @@ if (!$error)
 $astatus = array(
     $ssl::STATUS_PENDING => _("Pending Certificate"),
     $ssl::STATUS_OK => _("Valid"),
-    $ssl::STATUS_EXPIRED => ("Expired"),
+    $ssl::STATUS_EXPIRED => "<span style=\"color: red; font-weight:bold\">" . _("Expired") . "</span>",
 );
 
+$vhosts = $ssl->get_vhosts();
+foreach ($vhosts as $v) {
+    if ($v["certif"] == 0) {
+        $info=_("Some of your hosting are using a <b>self-signed</b> certificate. <br>Your browser will not let you surf those domains properly<br>To fix this, buy a properly signed certificate")."<br>".$info;
+    }
+}
 include_once("head.php");
 
 if ($error) {
@@ -76,7 +82,7 @@ if ($info) {
         <input type="submit" name="go" value="<?php __("Filter"); ?>"/>
 </form>
 <table class="tlist">
-    <tr><th></th><th><?php __("FQDN"); ?></th><th><?php __("Status"); ?></th><th><?php __("Valid From"); ?></th><th><?php __("Valid Until"); ?></th></tr>
+    <tr><th></th><th><?php __("Domain Name"); ?></th><th><?php __("Status"); ?></th><th><?php __("Validity period"); ?></th><th><?php __("Used by"); ?></th></tr>
     <?php
     reset($r);
     while (list($key, $val) = each($r)) {
@@ -85,26 +91,54 @@ if ($info) {
             <td><div class="ina edit"><a href="ssl_view.php?id=<?php echo $val["id"] ?>"><?php __("Details"); ?></a></div></td>
 
             <td><?php echo $val["fqdn"]; ?></td>
-            <td><?php echo $astatus[$val["status"]];
-            if ($val["shared"])
-                echo " <i>" . _("(shared)") . "</i>";
-        ?></td>
+            <td><?php
+                echo $astatus[$val["status"]];
+                if ($val["shared"])
+                    echo " <i>" . _("(shared)") . "</i>";
+                ?></td>
             <?php
             if ($val["status"] != $ssl::STATUS_PENDING) {
                 ?>
-                <td><?php echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validstartts"])); ?></td>						       
-                <td><?php echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validendts"])); ?></td> 
-        <?php } else { ?>
-                <td><?php __("Requested on: "); ?></td>						       
-                <td><?php echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validstartts"])); ?></td> 
-        <?php } ?>
+                <td><?php echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validstartts"])); ?><br>
+                    <?php
+                    if ($val["validendts"] < (time() + 86400 * 31))
+                        echo "<span style=\"color: red; font-weight:bold\">";
+                    echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validendts"]));
+                    if ($val["validendts"] < (time() + 86400 * 31))
+                        echo "</span>";
+                    ?></td> 
+            <?php } else { ?>
+                <td><?php __("Requested on: "); ?><br>
+                    <?php echo format_date(_('%3$d-%2$d-%1$d %4$d:%5$d'), date("Y-m-d H:i:s", $val["validstartts"])); ?></td> 
+            <?php } ?>
+            <td><?php
+                foreach ($vhosts as $v) {
+                    if ($v["certif"] == $val["id"]) {
+                        $v["fqdn"] = (($v["sub"]) ? ($v["sub"] . ".") : "") . $v["domaine"];
+                        echo "<a href=\"dom_edit.php?domain=" . $v["domaine"] . "\">" . $v["fqdn"] . "</a><br>\n";
+                    }
+                }
+                ?></td>
         </tr>
-    <?php
-}
-?>
+        <?php
+    }
+    // Now we enumerate self-signed certificates
+    foreach ($vhosts as $v) {
+        if ($v["certif"] == 0) {
+            $v["fqdn"] = (($v["sub"]) ? ($v["sub"] . ".") : "") . $v["domaine"];
+            echo "<tr><td><div class=\"ina add\"><a href=\"ssl_new.php?fqdn=" . $v["fqdn"] . "\">" . _("Create one") . "</a></div></td>";
+            echo "<td colspan=\"3\"><span style=\"color: red; font-weight:bold\">" . _("This hosting has no valid certificate<br>a self-signed one has been created") . "</span></td>";
+            echo "<td><a href=\"dom_edit.php?domain=" . $v["domaine"] . "\">" . $v["fqdn"] . "</a></td>";
+            echo "</tr>";
+        }
+    }
+    ?>
+
 </table>
+<p>&nbsp;</p>
 <p>
     <span class="inb add"><a href="ssl_new.php"><?php __("Create or Import a new SSL Certificate"); ?></a></span> 
 </p>
+
 
 <?php include_once("foot.php"); ?>

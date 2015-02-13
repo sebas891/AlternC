@@ -44,7 +44,7 @@ class m_ssl {
     const FILTER_SHARED = 8;
     const SSL_INCRON_FILE = "/var/run/alternc/ssl/generate_certif_alias";
 
-    var $myDomainesTypes = array("vhost-ssl", "vhost-mixssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl","php52-ssl","php52-mixssl");
+    var $myDomainesTypes = array("vhost-ssl", "vhost-mixssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl", "php52-ssl", "php52-mixssl");
 
     const KEY_REPOSITORY = "/var/lib/alternc/ssl/private";
 
@@ -109,6 +109,8 @@ class m_ssl {
     function get_list(&$filter = null) {
         global $db, $err, $cuid;
         $err->log("ssl", "get_list");
+        // Expire expired certificates:
+        $db->query("UPDATE certificates SET status=".self::STATUS_EXPIRED." WHERE status=".self::STATUS_OK." AND validend<NOW();");
         $r = array();
         // If we have no filter, we filter by default on pending and ok certificates if there is more than 10 of them for the same user.
         if (is_null($filter)) {
@@ -148,6 +150,29 @@ class m_ssl {
             return $r;
         } else {
             $err->raise("ssl", _("No SSL certificates available"));
+            return array();
+        }
+    }
+
+    // ----------------------------------------------------------------- 
+    /** Return all the Vhosts of this user using SSL certificates 
+     * @return array all the ssl certificate  and hosts of this user 
+     */
+    function get_vhosts() {
+        global $db, $err, $cuid;
+        $err->log("ssl", "get_vhosts");
+        $r=array();
+        $db->query("SELECT ch.*, UNIX_TIMESTAMP(c.validstart) AS validstartts, UNIX_TIMESTAMP(c.validend) AS validendts, sd.domaine, sd.sub "
+                . "FROM certif_hosts ch LEFT JOIN certificates c ON ch.certif=c.id "
+                . ", sub_domaines sd WHERE sd.id=ch.sub AND ch.uid=$cuid "
+                . "ORDER BY sd.domaine, sd.sub;");
+        if ($db->num_rows()) {
+            while ($db->next_record()) {
+                $r[] = $db->Record;
+            }
+            return $r;
+        } else {
+            $err->raise("ssl", _("You currently have no hosting using SSL certificate"));
             return array();
         }
     }
@@ -213,6 +238,27 @@ class m_ssl {
     }
 
     // ----------------------------------------------------------------- 
+    /** Delete a Certificate for the current user.
+     * @return boolean TRUE if the certificate has been deleted successfully.
+     */
+    function del_certificate($id) {
+        global $db, $err, $cuid;
+        $err->log("ssl", "del_certificate");
+        $id = intval($id);
+        $db->query("SELECT * FROM certificates WHERE uid='$cuid' AND id='$id';");
+        if (!$db->next_record()) {
+            $err->raise("ssl", _("Can't find this Certifcate"));
+            return false;
+        }
+        $fqdn = $db->Record["fqdn"];
+        $altnames = $db->Record["altnames"];
+        $db->query("DELETE FROM certificates  WHERE uid='$cuid' AND id='$id';");
+        // Update any existing VHOST using this cert/key
+        $this->updateTrigger($fqdn, $altnames);
+        return true;
+    }
+
+    // ----------------------------------------------------------------- 
     /** Share (or unshare) an ssl certificate
      * @param $id integer the id of the certificate in the table.
      * @param $action integer share (1) or unshare (0) this certificate
@@ -229,7 +275,7 @@ class m_ssl {
         }
         if ($action) {
             $action = 1;
-            $this->updateTrigger($db->Record["fqdn"],$db->Record["altnames"]);
+            $this->updateTrigger($db->Record["fqdn"], $db->Record["altnames"]);
         } else {
             $action = 0;
         }
@@ -307,7 +353,7 @@ class m_ssl {
             $err->raise("ssl", _("Can't save the Key/Crt/Chain now. Please try later."));
             return false;
         }
-        $this->updateTrigger($fqdn,$altnames);
+        $this->updateTrigger($fqdn, $altnames);
         return $id;
     }
 
@@ -344,7 +390,7 @@ class m_ssl {
             $err->raise("ssl", _("Can't save the Crt/Chain now. Please try later."));
             return false;
         }
-        $this->updateTrigger($fqdn,$altnames);
+        $this->updateTrigger($fqdn, $altnames);
         return $certid;
     }
 
@@ -434,10 +480,17 @@ class m_ssl {
             // Save crt/key/chain into KEY_REPOSITORY
             $CRTDIR = self::KEY_REPOSITORY . "/" . $subdom["compte"];
             @mkdir($CRTDIR);
-            file_put_contents($CRTDIR . "/" . $fqdn . ".crt", $cert["sslcrt"]);
-            file_put_contents($CRTDIR . "/" . $fqdn . ".key", $cert["sslkey"]);
-            if (isset($cert["sslchain"]) && $cert["sslchain"]) {
-                file_put_contents($CRTDIR . "/" . $fqdn . ".chain", $cert["sslchain"]);
+            // Don't *overwrite* existing self-signed certificates in KEY_REPOSITORY
+            if (isset($cert["selfsigned"]) &&
+                    file_exists($CRTDIR . "/" . $fqdn . ".crt") &&
+                    file_exists($CRTDIR . "/" . $fqdn . ".key")) {
+                echo "Self-Signed certificate reused...\n";
+            } else {
+                file_put_contents($CRTDIR . "/" . $fqdn . ".crt", $cert["sslcrt"]);
+                file_put_contents($CRTDIR . "/" . $fqdn . ".key", $cert["sslkey"]);
+                if (isset($cert["sslchain"]) && $cert["sslchain"]) {
+                    file_put_contents($CRTDIR . "/" . $fqdn . ".chain", $cert["sslchain"]);
+                }
             }
             // edit apache conf file to set the certificate:
             $s = file_get_contents($TARGET_FILE);
@@ -449,7 +502,35 @@ class m_ssl {
                 $s = str_replace("%%CHAINLINE%%", "", $s);
             }
             file_put_contents($TARGET_FILE, $s);
+            // Edit certif_hosts:
+            $db->query("DELETE FROM certif_hosts WHERE sub=" . $subdom["id"] . ";");
+            $db->query("INSERT INTO certif_hosts SET "
+                    . "sub=" . intval($subdom["id"]) . ", "
+                    . "certif=" . intval($cert["id"]) . ", "
+                    . "uid=" . intval($subdom["compte"]) . ";");
         } // action==create
+        if ($action == "delete") {
+            $err->log("ssl", "update_domain:DELETE($action,$type,$fqdn)");
+            $offset = 0;
+            $found = false;
+            do { // try each subdomain (strtok-style) and search them in sub_domaines table:
+                $db->query("SELECT * FROM sub_domaines WHERE "
+                        . "sub='" . substr($fqdn, 0, $offset) . "' AND domaine='" . substr($fqdn, $offset + ($offset != 0)) . "' "
+                        . "AND web_action NOT IN ('','OK') AND type='" . $type . "';");
+                if ($db->next_record()) {
+                    $found = true;
+                    break;
+                }
+                $offset = strpos($fqdn, ".", $offset);
+            } while (true);
+            if (!$found) {
+                echo "FATAL: didn't found fqdn $fqdn in sub_domaines table !\n";
+                return;
+            }
+            // found and $db point to it:
+            $subdom = $db->Record;
+            $db->query("DELETE FROM certif_hosts WHERE sub=" . $subdom["id"] . ";");
+        }
     }
 
     //  ---------------------------------------------------------------- 
@@ -709,7 +790,8 @@ class m_ssl {
         openssl_x509_export($crt, $crtout);
         return array("id" => 0, "status" => 1, "shared" => 0, "fqdn" => $fqdn, "altnames" => "",
             "validstart" => date("Y-m-d H:i:s"), "validend" => date("Y-m-d H:i:s", time() + 86400 * 10 * 365.249),
-            "sslcsr" => $csrout, "sslcrt" => $crtout, "sslkey" => $privKey, "sslchain" => ""
+            "sslcsr" => $csrout, "sslcrt" => $crtout, "sslkey" => $privKey, "sslchain" => "",
+            "selfsigned" => true,
         );
     }
 

@@ -21,31 +21,28 @@
   To read the license please visit http://www.gnu.org/copyleft/gpl.html
   ----------------------------------------------------------------------
   Original Author of file: Benjamin Sonntag
-  Purpose of file: Create / Import an SSL Certificate
+  Purpose of file: DELETE an ssl certificate
   ----------------------------------------------------------------------
  */
 require_once("../class/config.php");
 
 $fields = array(
     "id" => array("post", "integer", ""),
-    "crt" => array("post", "string", ""),
-    "chain" => array("post", "string", ""),
-    "delete" => array("post","string",""),
+    "delete" => array("post", "string", ""),
+    "confirm" => array("post", "string", ""),
 );
 getFields($fields);
 
-if ($delete!="") {
-    require_once("ssl_delete.php");
-    exit();
-}
-
-$cert = $ssl->finalize($id, $crt, $chain);
-
-$error = $err->errstr();
-if ($error) {
+if (!isset($delete)) {
     require_once("ssl_list.php");
     exit();
 }
-$info = _("Your ssl certificate has been imported successfully");
 
-require_once("ssl_view.php");
+$ok = $ssl->del_certificate($id);
+
+if ($ok) $info=_("Your SSL Certificate has been deleted");
+
+$error = $err->errstr();
+
+require_once("ssl_list.php");
+

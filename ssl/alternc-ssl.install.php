@@ -63,7 +63,7 @@ if ($argv[1] == "before-reload") {
     } else {
         $found = false;
         while ($s = fgets($f, 1024)) {
-            if (preg_match("#NameVirtualHost.*443#", $s)) {
+            if (preg_match(":[^#]*NameVirtualHost.*443:", $s)) {
                 $found = true;
                 break;
             }
