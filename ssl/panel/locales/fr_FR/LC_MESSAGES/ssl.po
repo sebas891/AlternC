@@ -21,7 +21,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
 #: ../admin/ssl_delete.php:43
-#, fuzzy
 msgid "Your SSL Certificate has been deleted"
 msgstr "Votre certificat SSL a été effacé"
 
