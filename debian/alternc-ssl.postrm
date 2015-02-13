@@ -9,8 +9,8 @@ case "$1" in
 
     # TODO : we don't purge *-ssl vhosts or *-ssl templates, they may break the hosting ...
     if [ -e "$CONFIGFILE" -a -x "/usr/bin/mysql" ]; then
-        mysql --defaults-file=${CONFIGFILE} -f -e "DELETE FROM domaines_type WHERE name IN ('vhost-ssl,'vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
-        mysql --defaults-file=${CONFIGFILE} -f -e "UPDATE sub_domaines SET web_action='DELETE' WHERE type IN ('vhost-ssl,'vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
+        mysql --defaults-file=${CONFIGFILE} -f -e "DELETE FROM domaines_type WHERE name IN ('vhost-ssl','vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
+        mysql --defaults-file=${CONFIGFILE} -f -e "UPDATE sub_domaines SET web_action='DELETE' WHERE type IN ('vhost-ssl','vhost-mixssl','roundcube-ssl','squirrelmail-ssl','panel-ssl','php52-ssl','php52-mixssl');"
     fi
 ;;
   purge)
