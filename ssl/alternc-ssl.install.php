@@ -23,12 +23,12 @@ if ($argv[1] == "before-reload") {
             ('vhost-mixssl', 'Locally hosted HTTP and HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 1);");
 
     $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
-            ('panel-ssl', 'AlternC panel access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'ip,ipv6,cname,txt,mx,mx2,defmx,defmx2', 'ALL', 0, 0, 1);");
+            ('panel-ssl', 'HTTPS AlternC panel access', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'ip,ipv6,cname,txt,mx,mx2,defmx,defmx2', 'ALL', 0, 0, 1);");
 
     $db->query("SELECT * FROM domaines_type WHERE name='roundcube';");
     if ($db->next_record()) {
         $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
-    ('roundcube-ssl', 'Roundcube Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1;");
+    ('roundcube-ssl', 'HTTPS Roundcube Webmail', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1;");
     } else {
         $db->query("DELETE FROM domaines_type WHERE name='roundcube-ssl';");
         $db->query("UPDATE sub_domaines SET web_action='DELETE' WHERE type='roundcube-ssl';");
@@ -37,7 +37,7 @@ if ($argv[1] == "before-reload") {
     $db->query("SELECT * FROM domaines_type WHERE name='squirrelmail';");
     if ($db->next_record()) {
         $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
-            ('squirrelmail-ssl', 'Squirrelmail Webmail access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1);");
+            ('squirrelmail-ssl', 'HTTPS Squirrelmail Webmail', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'mx,mx2,defmx,defmx2,txt', 'ALL', 0, 0, 1);");
     } else {
         $db->query("DELETE FROM domaines_type WHERE name='squirrelmail-ssl';");
         $db->query("UPDATE sub_domaines SET web_action='DELETE' WHERE type='squirrelmail-ssl';");
