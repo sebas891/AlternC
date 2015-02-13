@@ -433,7 +433,7 @@ msgstr "Certificats SSL"
 
 #: ../class/m_ssl.php:79
 msgid "New SSL certificate"
-msgstr "Nouevau Certificat SSL"
+msgstr "Nouveau Certificat SSL"
 
 #: ../class/m_ssl.php:93
 msgid "List SSL Certificates"
