@@ -12,10 +12,10 @@ case "$1" in
     /usr/lib/alternc/quota_init ssl 0 
 
     echo "Installing mysql table"
-    mysql --defaults-file=/etc/alternc/my.cnf < /usr/share/alternc/install/ssl.sql
+    mysql --defaults-file=/etc/alternc/my.cnf -f < /usr/share/alternc/install/ssl.sql || true
     
     # Create default quota "ssl" with value 0
-    mysql --defaults-file=/etc/alternc/my.cnf -Bse "INSERT INTO defquotas VALUES ('ssl', 0, 'default')" || true
+    mysql --defaults-file=/etc/alternc/my.cnf -fBse "INSERT INTO defquotas VALUES ('ssl', 0, 'default')" || true
 
     echo "installing required apache modules" 
     a2enmod ssl

@@ -34,7 +34,7 @@ $fields = array(
 getFields($fields);
 
 $cert = $ssl->finalize($id, $crt, $chain);
-echo $ssl->error;
+
 $error = $err->errstr();
 if ($error) {
     require_once("ssl_list.php");

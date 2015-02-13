@@ -591,18 +591,18 @@ class m_ssl {
 
         if (substr($crt, 0, 28) != "-----BEGIN CERTIFICATE-----\n" ||
                 substr($crt, -26, 26) != "-----END CERTIFICATE-----\n") {
-            $this->error.=_("The certificate must begin by BEGIN CERTIFICATE and end by END CERTIFICATE lines. Please check you pasted it in PEM form.") . "\n";
+            $this->error.=_("The certificate must begin by BEGIN CERTIFICATE and end by END CERTIFICATE lines. Please check you pasted it in PEM form.") . "<br>\n";
         }
         if ($chain &&
                 (substr($chain, 0, 28) != "-----BEGIN CERTIFICATE-----\n" ||
                 substr($chain, -26, 26) != "-----END CERTIFICATE-----\n")) {
-            $this->error.=_("The chained certificate must begin by BEGIN CERTIFICATE and end by END CERTIFICATE lines. Please check you pasted it in PEM form.") . "\n";
+            $this->error.=_("The chained certificate must begin by BEGIN CERTIFICATE and end by END CERTIFICATE lines. Please check you pasted it in PEM form.") . "<br>\n";
         }
         if ((substr($key, 0, 32) != "-----BEGIN RSA PRIVATE KEY-----\n" ||
                 substr($key, -30, 30) != "-----END RSA PRIVATE KEY-----\n") &&
                 (substr($key, 0, 28) != "-----BEGIN PRIVATE KEY-----\n" ||
                 substr($key, -26, 26) != "-----END PRIVATE KEY-----\n")) {
-            $this->error.=_("The private key must begin by BEGIN (RSA )PRIVATE KEY and end by END (RSA )PRIVATE KEY lines. Please check you pasted it in PEM form.") . "\n";
+            $this->error.=_("The private key must begin by BEGIN (RSA )PRIVATE KEY and end by END (RSA )PRIVATE KEY lines. Please check you pasted it in PEM form.") . "<br>\n";
         }
         if ($this->error) {
             return false;
@@ -638,7 +638,7 @@ class m_ssl {
             $i++;
             $tmpr = openssl_x509_read($tmpcert);
             if ($tmpr === false) {
-                $this->error.=sprintf(_("The %d-th certificate in the chain is invalid"), $i) . "\n";
+                $this->error.=sprintf(_("The %d-th certificate in the chain is invalid"), $i) . "<br>\n";
             } else {
                 $rchains[] = $tmpr;
             }
@@ -646,34 +646,34 @@ class m_ssl {
         $rcrt = openssl_x509_read($crt);
         $crtdata = openssl_x509_parse($crt);
         if ($rcrt === false || $crtdata === false) {
-            $this->error.=_("The certificate is invalid.") . "\n";
+            $this->error.=_("The certificate is invalid.") . "<br>\n";
         }
 
         $rkey = openssl_pkey_get_private($key);
         if ($rkey === false) {
-            $this->error.=_("The private key is invalid.") . "\n";
+            $this->error.=_("The private key is invalid.") . "<br>\n";
         }
         if (!$this->error) {
             // check that the private key and the certificates are matching :
             if (!openssl_x509_check_private_key($rcrt, $rkey)) {
-                $this->error.=_("The private key is not the one signed inside the certificate.") . "\n";
+                $this->error.=_("The private key is not the one signed inside the certificate.") . "<br>\n";
             }
         }
         if (!$this->error) {
             // Everything is fine, let's recreate crt, chain, key from our internal OpenSSL structures:
             if (!openssl_x509_export($rcrt, $crt)) {
-                $this->error.=_("Can't export your certificate as a string, please check its syntax.") . "\n";
+                $this->error.=_("Can't export your certificate as a string, please check its syntax.") . "<br>\n";
             }
             $chain = "";
             foreach ($rchains as $r) {
                 if (!openssl_x509_export($r, $tmp)) {
-                    $this->error.=_("Can't export one of your chained certificates as a string, please check its syntax.") . "\n";
+                    $this->error.=_("Can't export one of your chained certificates as a string, please check its syntax.") . "<br>\n";
                 } else {
                     $chain.=$tmp;
                 }
             }
             if (!openssl_pkey_export($rkey, $key)) {
-                $this->error.=_("Can't export your private key as a string, please check its syntax.") . "\n";
+                $this->error.=_("Can't export your private key as a string, please check its syntax.") . "<br>\n";
             }
         }
         return array($crt, $chain, $key, $crtdata);

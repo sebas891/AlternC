@@ -20,7 +20,7 @@ if ($argv[1] == "before-reload") {
             ('vhost-ssl', 'Locally hosted forcing HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 0);");
 
     $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
-            ('vhost-mixssl', 'Locally hosted HTTP and HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 0);");
+            ('vhost-mixssl', 'Locally hosted HTTP and HTTPS', 'DIRECTORY', '%SUB% IN A @@PUBLIC_IP@@', 'vhost,url,txt,defmx,defmx2,mx,mx2', 'ALL', 0, 0, 1);");
 
     $db->query("INSERT IGNORE INTO `domaines_type` (name, description, target, entry, compatibility, enable, only_dns, need_dns, advanced ) VALUES
             ('panel-ssl', 'AlternC panel access WITH SSL', 'NONE', '%SUB% IN A @@PUBLIC_IP@@', 'ip,ipv6,cname,txt,mx,mx2,defmx,defmx2', 'ALL', 0, 0, 1);");
