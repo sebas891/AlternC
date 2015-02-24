@@ -499,7 +499,7 @@ class m_ssl {
             $s = str_replace("%%CRT%%", $CRTDIR . "/" . $fqdn . ".crt", $s);
             $s = str_replace("%%KEY%%", $CRTDIR . "/" . $fqdn . ".key", $s);
             if (isset($cert["sslchain"]) && $cert["sslchain"]) {
-                $s = str_replace("%%CHAINLINE%%", "SSLCertificateChainFile " . $CRTDIR . "/" . $fqdn . ".crt", $s);
+                $s = str_replace("%%CHAINLINE%%", "SSLCertificateChainFile " . $CRTDIR . "/" . $fqdn . ".chain", $s);
             } else {
                 $s = str_replace("%%CHAINLINE%%", "", $s);
             }
