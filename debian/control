@@ -334,7 +334,8 @@ Package: alternc-ssl
 Priority: optional
 Section: admin
 Architecture: all
-Depends: openssl, mysql-client, debconf, alternc (>= 3.1), php5-cli, ${misc:Depends}
+Depends: openssl, mysql-client, debconf, alternc (>= 3.0), php5-cli, ${misc:Depends}
+Conflicts: alternc (<< 3.0)
 Description: HTTPS module for AlternC
  AlternC is a mutualized hosting software manager for Linux.
  It allows you to manage your websites, domains, ftp, emails, aliases,
