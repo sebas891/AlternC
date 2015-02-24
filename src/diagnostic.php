@@ -126,7 +126,7 @@ if(is_file("/usr/share/alternc/panel/class/config_nochk.php")){
 
 
 
-$directoryInstance                      = new Alternc_Diagnostic_Directory("/tmp/diagnostic");
+$directoryInstance                      = new Alternc_Diagnostic_Directory("/var/log/alternc/diagnostic");
 
 
 // instanciation of the diagnosticManager service
@@ -168,9 +168,49 @@ $createCommmand->addOption('format', array(
     'help_name'   => 'format'
     ));
 
-$indexCommmand                          = $consoleParser->addCommand('index', array('multiple'=>false,"alias"=>"i","description" => "Shows all available diagnostics"));
-$compareCommmand                        = $consoleParser->addCommand('compare', array('multiple'=>false,"alias"=>"x","description" => "Removes one or more diagnotics"));
-$compareCommmand                        = $consoleParser->addCommand('show', array('multiple'=>false,"alias"=>"s","description" => "Prints a diagnotic content"));
+$listCommmand                          = $consoleParser->addCommand('list', array('multiple'=>false,"alias"=>"i","description" => "Shows all available diagnostics"));
+$diffCommmand                        = $consoleParser->addCommand('diff', array('multiple'=>false,"alias"=>"x","description" => "Removes one or more diagnotics"));
+$diffCommmand->addOption('source', array(
+   'short_name'  => '-s',
+   'long_name'   => '--source',
+   'action'      => 'StoreString',
+   'default'     => '0',
+   'description' => 'First file to diff, id or basename. Default: 0',
+    'help_name'   => 'source'
+    ));
+$diffCommmand->addOption('target', array(
+   'short_name'  => '-t',
+   'long_name'   => '--target',
+   'action'      => 'StoreString',
+   'default'     => '1',
+   'description' => 'First file to diff, id or basename. Default: 1',
+    'help_name'   => 'target'
+    ));
+$diffCommmand->addOption('format', array(
+   'short_name'  => '-f',
+   'long_name'   => '--format',
+   'action'      => 'StoreString',
+   'default'     => 'txt',
+   'description' => 'Sets the format of the diagnostic diff. default: txt',
+    'help_name'   => 'format'
+    ));
+$showCommand				= $consoleParser->addCommand('show', array('multiple'=>false,"alias"=>"s","description" => "Prints a diagnotic content"));
+$showCommand->addOption('id', array(
+   'short_name'  => '-i',
+   'long_name'   => '--id',
+   'action'      => 'StoreString',
+   'default'     => '0',
+   'description' => 'Provides the id or name of a diagnostic to show. Default: 0',
+    'help_name'   => 'id'
+    ));
+$showCommand->addOption('format', array(
+   'short_name'  => '-f',
+   'long_name'   => '--format',
+   'action'      => 'StoreString',
+   'default'     => 'txt',
+   'description' => 'Sets the format of the output. Default: txt. Other choices : array',
+    'help_name'   => 'format'
+    ));
 $deleteCommmand                         = $consoleParser->addCommand('delete', array('multiple'=>false,"alias"=>"d","description" => "Deletes diagnostic files"));
 
 
@@ -179,15 +219,15 @@ $deleteCommmand                         = $consoleParser->addCommand('delete', a
 try {
     $result                             = $consoleParser->parse();
     if ($result->command_name){
-        $command_name                   = $result->command_name;
+        $command_name                   = "c_".$result->command_name;
         $command                        = $result->command;
     }else{
-        throw new \Exception("Command missing, use -h to learn about available commands.");
+        throw new \Exception("Welcome to AlternC Diagnostics! Use -h to learn about available commands.");
     }
     if( !method_exists($diagnosticManager, $command_name)){
         throw new \Exception("Invalid command : $command");
     }
-    $diagnosticManager->$command_name($command);
+    $result = $diagnosticManager->$command_name($command);
 } catch (\Exception $exc) {
     $consoleParser->displayError($exc->getMessage());
 }

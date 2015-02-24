@@ -734,7 +734,7 @@ class m_dom {
                 return false;
             }
             if ($dns && $v == -3) {
-                $err->raise("dom", _("The domain cannot be found in the whois database"));
+                $err->raise("dom", _("The name servers referenced by this domain do not match those referenced by this AlternC instance"));
                 return false;
             }
 
@@ -996,7 +996,7 @@ class m_dom {
                         $ligne = preg_replace("/^ *([^ ]*) \(.*\)$/", "\\1", trim($ligne));
                         if ($found)
                             $tmp = trim($ligne);
-                        if ($tmp)
+                        if (isset($tmp) && $tmp)
                             $serveurList[] = $tmp;
                         if ($ligne == "Nameservers:") {
                             $state = 1;
