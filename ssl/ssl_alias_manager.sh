@@ -15,8 +15,8 @@ mkdir -p "$FILEDIR"
 
 mysql --defaults-file=/etc/alternc/my.cnf --skip-column-names -B -e "SELECT name,content FROM certif_alias;" | while read name content
 do
-    echo "alias $name ${FILEDIR}${name}" >>$TMP
-    echo "$content" >"${FILEDIR}${name}"
+    echo "alias /$name ${FILEDIR}/${name}" >>$TMP
+    echo "$content" >"${FILEDIR}/${name}"
 done
 if ! diff -q "$TMP" "$APACHECONF"
 then
