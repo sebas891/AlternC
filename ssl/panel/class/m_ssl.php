@@ -42,7 +42,7 @@ class m_ssl {
     const FILTER_OK = 2;
     const FILTER_EXPIRED = 4;
     const FILTER_SHARED = 8;
-    const SSL_INCRON_FILE = "/var/run/alternc/ssl/generate_certif_alias";
+    const SSL_INCRON_FILE = "/var/run/alternc-ssl/generate_certif_alias";
 
     var $myDomainesTypes = array("vhost-ssl", "vhost-mixssl", "panel-ssl", "roundcube-ssl", "squirrelmail-ssl", "php52-ssl", "php52-mixssl");
 

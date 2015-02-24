@@ -9,6 +9,11 @@ if ($argv[1] == "templates") {
     // install ssl.conf
     echo "[alternc-ssl] Installing ssl.conf template\n";
     copy("/etc/alternc/templates/apache2/mods-available/ssl.conf","/etc/apache2/mods-available/ssl.conf");
+    mkdir("/var/run/alternc-ssl");
+    chown("/var/run/alternc-ssl","alterncpanel");
+    chgrp("/var/run/alternc-ssl","alterncpanel");
+    // replace open_basedir line if necessary : 
+    exec('sed -i -e "s#:/var/run/alternc#:/var/run#" -e "s#:/run/alternc#:/run#" /etc/alternc/apache2.conf /etc/alternc/templates/alternc/apache2.conf');
 }
 
 if ($argv[1] == "before-reload") {

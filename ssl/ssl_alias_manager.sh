@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -f /var/run/alternc/ssl/generate_certif_alias
+rm -f /var/run/alternc-ssl/generate_certif_alias
 
 # Launched by incron when /tmp/generate_certif_alias exists
 # regenerate the list of global aliases used by Comodo for certificate ownership validation
@@ -18,7 +18,11 @@ do
     echo "alias $name ${FILEDIR}${name}" >>$TMP
     echo "$content" >"${FILEDIR}${name}"
 done
-mv -f "$TMP" "$APACHECONF"
-
-service apache2 reload
+if ! diff -q "$TMP" "$APACHECONF"
+then
+    mv -f "$TMP" "$APACHECONF"
+    service apache2 reload
+else
+    rm -f "$TMP"
+fi
 
