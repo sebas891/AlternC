@@ -438,7 +438,9 @@ class m_ssl {
         foreach ($an as $a)
             if (trim($a))
                 $fqdns[] = trim($a);
-        $db->query("UPDATE sub_domaines SET web_action='UPDATE' WHERE if(LENGTH(sub)>0,CONCAT(sub,'.',domaine),domaine) IN ('" . implode("','", $fqdns) . "');");
+        $db->query("UPDATE sub_domaines SET web_action='UPDATE' WHERE "
+                . "if(LENGTH(sub)>0,CONCAT(sub,'.',domaine),domaine) IN ('" . implode("','", $fqdns) . "') "
+                . "AND type LIKE '%ssl';");
     }
 
     //  ----------------------------------------------------------------- 
@@ -544,7 +546,7 @@ class m_ssl {
         // 1st search for a valid certificate in my account or shared by the admin:
         // the ORDER BY make it so that we try VALID then EXPIRED one (sad)
         $wildcard = "*" . substr($fqdn, strpos($fqdn, ".") + 1);
-        $db->query("SELECT * FROM certificates WHERE status=1 "
+        $db->query("SELECT * FROM certificates WHERE (status=".self::STATUS_OK." OR status=".self::STATUS_EXPIRED.") "
                 . "AND (uid=" . $uid . " OR shared=1) "
                 . "AND (fqdn='" . $fqdn . "' OR fqdn='" . $wildcard . "' OR altnames LIKE '%" . $fqdn . "%') "
                 . "ORDER BY (validstart<=NOW() AND validend>=NOW()) DESC, validstart DESC ");
