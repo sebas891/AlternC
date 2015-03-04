@@ -596,7 +596,7 @@ class m_ssl {
      */
     function parseAltNames($str) {
         $mat = array();
-        if (preg_match_all("#DNS:([^,]*),#", $str, $mat, PREG_PATTERN_ORDER)) {
+        if (preg_match_all("#DNS:([^,]*)#", $str, $mat, PREG_PATTERN_ORDER)) {
             return implode("\n", $mat[1]);
         } else {
             return "";
