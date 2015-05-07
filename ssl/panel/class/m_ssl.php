@@ -545,21 +545,27 @@ class m_ssl {
         $uid = intval($uid);
         // 1st search for a valid certificate in my account or shared by the admin:
         // the ORDER BY make it so that we try VALID then EXPIRED one (sad)
-        $wildcard = "*" . substr($fqdn, strpos($fqdn, ".") + 1);
+        $wildcard = "*." . substr($fqdn, strpos($fqdn, ".") + 1);
         $db->query("SELECT * FROM certificates WHERE (status=".self::STATUS_OK." OR status=".self::STATUS_EXPIRED.") "
                 . "AND (uid=" . $uid . " OR shared=1) "
                 . "AND (fqdn='" . $fqdn . "' OR fqdn='" . $wildcard . "' OR altnames LIKE '%" . $fqdn . "%') "
                 . "ORDER BY (validstart<=NOW() AND validend>=NOW()) DESC, validstart DESC ");
         while ($db->next_record()) {
+	  // name
             if ($db->Record["fqdn"] == $fqdn) {
                 return $db->Record;
             }
+	    // or alternative names 
             $altnames = explode("\n", $db->Record["altnames"]);
             foreach ($altnames as $altname) {
                 if (trim($altname) == $fqdn) {
                     return $db->Record;
                 }
             }
+	    // or wildcard
+	    if ($db->Record["fqdn"] == $wildcard) {
+	      return $db->Record;
+	    }
         }
         // not found, we generate a one-time self-signed certificate for this host.
         $crt = $this->selfSigned($fqdn);

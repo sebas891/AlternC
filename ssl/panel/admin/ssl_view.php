@@ -107,8 +107,6 @@ if ($cert["status"] == $ssl::STATUS_PENDING) {
         <?php
     }
     ?>
- <form method="post" action="ssl_finalize.php" name="main" id="main">
-        <input type="hidden" name="id" id="id" value="<?php echo $cert["id"]; ?>"/>
         <p>
         <span class="inb ok"><a href="ssl_list.php"><?php __("Back to my SSL Certificates"); ?></a></span> 
     </p>
