@@ -32,7 +32,7 @@ $fields = array (
 		 "passconf" => array("post","string",""),
 		 "quotamb" => array("post","integer",0),
 		 "enabled" => array("post","boolean",true),
-		 "islocal" => array("post","boolean",true),
+		 "islocal" => array("post","integer",1),
 		 "recipients" => array("post","string",""),
 		 );
 
