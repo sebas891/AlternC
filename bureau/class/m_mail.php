@@ -728,15 +728,19 @@ ORDER BY
             $db->query("UPDATE mailbox SET mail_action='OK' WHERE mail_action='DELETE' AND address_id= ? ;", array($mail_id));
         }
 
-	if ($islocal == 2) {
-		$db->query("INSERT INTO mailbox SET address_id= ? , delivery= ?, path= ? ;", array($mail_id, variable_get("custom_delivery"), ""));
+       if ($islocal == 2){
+            if ($me['islocal'] == 0) {
+                $db->query("INSERT INTO mailbox SET address_id= ? , delivery= ?, path= ? ;", array($mail_id, variable_get("custom_delivery"), ""));
+           } else {
+               $db->query("UPDATE mailbox SET delivery= ? WHERE address_id= ? ;", array(variable_get("custom_delivery"), $mail_id));
+            }
 	}
         if ($islocal == 1) {
             if ($quotamb != 0 && $quotamb < (intval($me["used"] / 1024 / 1024) + 1)) {
                 $quotamb = intval($me["used"] / 1024 / 1024) + 1;
                 $msg->raise("ALERT", "mail", _("You set a quota smaller than the current mailbox size. Since it's not allowed, we set the quota to the current mailbox size"));
             }
-            $db->query("UPDATE mailbox SET quota= ? WHERE address_id= ? ;", array($quotamb, $mail_id));
+            $db->query("UPDATE mailbox SET delivery= ?, quota= ? WHERE address_id= ? ;", array("dovecot", $quotamb, $mail_id));
         }
 
         $recipients = preg_replace('/[\r\t\s]/', "\n", $recipients); // Handle space AND new line
